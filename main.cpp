@@ -5,8 +5,7 @@
 #include "menu.h"
 const int cell_length = 32;
 
-int main()
-{
+int main() {
     srand(time(0));
     sf::RenderWindow game(sf::VideoMode(1024, 768), "Minesweeper");
     game.setFramerateLimit(60);

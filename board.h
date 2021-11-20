@@ -7,7 +7,7 @@ struct board {
 	board();
 	board(int x, int y);
 	void setMine();
-	void checkMine(int x, int y);
+	bool checkMine(int x, int y);
 	bool isZero(int x, int y);
 	bool isRevealed(int x, int y);
 	bool isPositive(int x, int y);

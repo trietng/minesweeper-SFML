@@ -1,4 +1,4 @@
-#include <board.h>
+#include "board.h"
 
 board::board() {
     i = 0;

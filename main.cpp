@@ -7,7 +7,7 @@ const int cell_length = 32;
 
 int main() {
     srand(time(0));
-    sf::RenderWindow game(sf::VideoMode(1024, 900), "Minesweeper");
+    sf::RenderWindow game(sf::VideoMode(1024, 892), "Minesweeper", sf::Style::Titlebar | sf::Style::Close);
     game.setFramerateLimit(60);
     sf::Texture b_texture;
     b_texture.loadFromMemory(tiles_png, tiles_png_len);
@@ -37,9 +37,11 @@ int main() {
             if (e.type == sf::Event::MouseButtonPressed) {
                 if ((bx < b.length) && (by < b.width)) {
                     if (e.key.code == sf::Mouse::Left) {
-                        b.revealCell(bx, by);
-                        if (b.isZero(bx, by)) {
-                            b.revealCellZero(bx, by);
+                        if (!b.isFlagged(bx, by)) {
+                            b.revealCell(bx, by);
+                            if (b.isZero(bx, by)) {
+                                b.revealCellZero(bx, by);
+                            }
                         }
                     }
                     if (e.key.code == sf::Mouse::Right) {       //Flagging
@@ -72,6 +74,12 @@ int main() {
         }
         game.clear();
         game.draw(m.outer);
+        game.draw(m.separator);
+        //draw save button
+        btn.GreenRect.setPosition(btn.posButton(0, -1));
+        game.draw(btn.GreenRect);
+        game.draw(txt.textSave);
+        //draw gamemode menu
         if (isNewPressed) {
             for (int i = 1; i < 5; ++i) {
                 btn.GreenRect.setPosition(btn.posButton(i, 0));

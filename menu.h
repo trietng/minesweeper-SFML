@@ -4,12 +4,12 @@
 const sf::Vector2f button_size = sf::Vector2f(160, 40);
 
 struct menu {
-    sf::RectangleShape outer, BlackRect;
+    sf::RectangleShape outer, BlackRect, separator;
     menu();
 };
 
 struct text {
-    sf::Text textNew, textResume, textOption, textHighScore, textQuit, textEasy, textMedium, textHard, textCustom;
+    sf::Text textNew, textResume, textOption, textHighScore, textQuit, textEasy, textMedium, textHard, textCustom, textSave;
     sf::Font fontConsola;
     text();
     sf::Vector2f posText(int x, int y);

@@ -1,12 +1,17 @@
 ﻿#include "menu.h"
 
 menu::menu() {
-    outer.setSize(sf::Vector2f(1000, 300));
+    outer.setSize(sf::Vector2f(1000, 356));
     outer.setPosition(sf::Vector2f(12, 524));
     outer.setFillColor(sf::Color::Black);
     outer.setOutlineThickness(4.f);
     outer.setOutlineColor(sf::Color::Green);
     //Black rectangle
+    
+    //Separator line
+    separator.setSize(sf::Vector2f(1000, 4));
+    separator.setPosition(sf::Vector2f(12, 588));
+    separator.setFillColor(sf::Color::Green);
 }
 
 text::text() {
@@ -57,10 +62,18 @@ text::text() {
     textCustom.setCharacterSize(24);
     textCustom.setFillColor(sf::Color::Green);
     textCustom.setPosition(posText(4, 0));
+    textSave.setFont(fontConsola);
+    textSave.setString("Save");
+    textSave.setCharacterSize(24);
+    textSave.setFillColor(sf::Color::Green);
+    textSave.setPosition(posText(0, -1));
 }
 
 sf::Vector2f text::posText(int x, int y) {
-    return sf::Vector2f(36 + x * 204, 540 + y * 56);
+    if (y == -1) {
+        return sf::Vector2f(36 + x * 204, 540);
+    }
+    return sf::Vector2f(36 + x * 204, 608 + y * 56);
 }
 
 button::button() {
@@ -69,9 +82,11 @@ button::button() {
     GreenRect.setOutlineThickness(4.f);
     GreenRect.setOutlineColor(sf::Color::Green);
 }
-sf::Vector2f button::posButton(int x, int y)
-{
-    return sf::Vector2f(24 + x * 204, 536 + y * 56);
+sf::Vector2f button::posButton(int x, int y) {
+    if (y == -1) {
+        return sf::Vector2f(24 + x * 204, 536);
+    }
+    return sf::Vector2f(24 + x * 204, 604 + y * 56);
 }
 
 bool button::isButtonPressed(int x, int y, sf::Event e, sf::Vector2f p) {

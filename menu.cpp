@@ -6,6 +6,7 @@ menu::menu() {
     outer.setFillColor(sf::Color::Black);
     outer.setOutlineThickness(4.f);
     outer.setOutlineColor(sf::Color::Green);
+    //Black rectangle
 }
 
 text::text() {
@@ -39,22 +40,23 @@ text::text() {
     textEasy.setString("Easy");
     textEasy.setCharacterSize(24);
     textEasy.setFillColor(sf::Color::Green);
-    textEasy.setPosition(36, 708);
+    textEasy.setPosition(posText(1, 0));
     textEasy.setFont(fontConsola);
     textMedium.setString("Medium");
     textMedium.setCharacterSize(24);
     textMedium.setFillColor(sf::Color::Green);
-    textMedium.setPosition(36, 708);
+    textMedium.setPosition(posText(2, 0));
     textMedium.setFont(fontConsola);
+    textHard.setFont(fontConsola);
     textHard.setString("Hard");
     textHard.setCharacterSize(24);
     textHard.setFillColor(sf::Color::Green);
-    textHard.setPosition(36, 708);
+    textHard.setPosition(posText(3, 0));
     textCustom.setFont(fontConsola);
     textCustom.setString("Custom");
     textCustom.setCharacterSize(24);
     textCustom.setFillColor(sf::Color::Green);
-    textCustom.setPosition(36, 708);
+    textCustom.setPosition(posText(4, 0));
 }
 
 sf::Vector2f text::posText(int x, int y) {
@@ -73,7 +75,7 @@ sf::Vector2f button::posButton(int x, int y)
 }
 
 bool button::isButtonPressed(int x, int y, sf::Event e, sf::Vector2f p) {
-    int a = 20 + p.x * 204, b = a + 168, c = 536 + p.y * 56, d = c + 48;
+    int a = p.x - 4, b = a + 168, c = p.y - 4, d = c + 48;
     if ((x > a) && (x < b) && (y > c) && (y < d)) {
         if (e.key.code == sf::Mouse::Left) {
             return true;

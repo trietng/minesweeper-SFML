@@ -13,10 +13,11 @@ int main() {
     b_texture.loadFromMemory(tiles_png, tiles_png_len);
     sf::Sprite b_sprite;
     b_sprite.setTexture(b_texture);
-    board b = board(9,9);
+    board b = board();
     menu m = menu();
     text txt = text();
     button btn = button();
+    bool isNewPressed = false, isCustomPressed = false;
     while (game.isOpen())
     {
         sf::Vector2i pos = sf::Mouse::getPosition(game);
@@ -25,14 +26,12 @@ int main() {
         sf::Event e;
         while (game.pollEvent(e))
         {
-            if (e.type == sf::Event::Closed)
+            if (e.type == sf::Event::Closed) {
                 game.close();
+            }
             if (e.type == sf::Event::KeyPressed) {
                 if (e.key.code == sf::Keyboard::R) {
                     b.DEBUG_revealAll();
-                }
-                if (e.key.code == sf::Keyboard::N) {
-                    b = board(32, 16);
                 }
             }
             if (e.type == sf::Event::MouseButtonPressed) {
@@ -43,7 +42,7 @@ int main() {
                             b.revealCellZero(bx, by);
                         }
                     }
-                    if (e.key.code == sf::Mouse::Right) {
+                    if (e.key.code == sf::Mouse::Right) {       //Flagging
                         if (b.isFlagged(bx, by)) {
                             b.unflagCell(bx, by);
                         }
@@ -52,29 +51,40 @@ int main() {
                         }
                     }
                 }
-                /*if ((pos.x > 20) && (pos.x < 188) && (pos.y > 700) && (pos.y < 748)) {
-                    if (e.key.code == sf::Mouse::Left) {
-                        game.close();
-                    }
-                } */
-                if (btn.isButtonPressed(pos.x, pos.y, e, btn.posButton(0,4))) {
+                if (btn.isButtonPressed(pos.x, pos.y, e, btn.posButton(0, 0))) {
+                    isNewPressed = true;
+                }
+                if ((isNewPressed) && (btn.isButtonPressed(pos.x, pos.y, e, btn.posButton(1, 0)))) {        //Easy
+                    b = board(9, 9);
+                    //clear menu
+                    //isNewPressed = false;
+                }
+                if ((isNewPressed) && (btn.isButtonPressed(pos.x, pos.y, e, btn.posButton(2, 0)))) {        //Medium
+                    b = board(16, 16);
+                }
+                if ((isNewPressed) && (btn.isButtonPressed(pos.x, pos.y, e, btn.posButton(3, 0)))) {        //Hard
+                    b = board(32, 16);
+                }
+                if (btn.isButtonPressed(pos.x, pos.y, e, btn.posButton(0,4))) {                             //Quit
                     game.close();
                 }
             }
         }
         game.clear();
         game.draw(m.outer);
-        for (int i = 0; i < 5; ++i) {
-            for (int j = 0; j < 1; ++j) {
-                btn.GreenRect.setPosition(btn.posButton(j, i));
+        if (isNewPressed) {
+            for (int i = 1; i < 5; ++i) {
+                btn.GreenRect.setPosition(btn.posButton(i, 0));
                 game.draw(btn.GreenRect);
             }
+            game.draw(txt.textEasy);
+            game.draw(txt.textMedium);
+            game.draw(txt.textHard);
+            game.draw(txt.textCustom);
         }
         for (int i = 0; i < 5; ++i) {
-            for (int j = 0; j < 1; ++j) {
-                btn.GreenRect.setPosition(btn.posButton(j, i));
-                game.draw(btn.GreenRect);
-            }
+            btn.GreenRect.setPosition(btn.posButton(0, i));
+            game.draw(btn.GreenRect);
         }
         game.draw(txt.textNew);
         game.draw(txt.textResume);

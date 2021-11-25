@@ -4,7 +4,7 @@
 const sf::Vector2f button_size = sf::Vector2f(160, 40);
 
 struct menu {
-    sf::RectangleShape outer;
+    sf::RectangleShape outer, BlackRect;
     menu();
 };
 

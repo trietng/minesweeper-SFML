@@ -7,7 +7,7 @@ const int cell_length = 32;
 
 int main() {
     srand(time(0));
-    sf::RenderWindow game(sf::VideoMode(1024, 768), "Minesweeper");
+    sf::RenderWindow game(sf::VideoMode(1024, 900), "Minesweeper");
     game.setFramerateLimit(60);
     sf::Texture b_texture;
     b_texture.loadFromMemory(tiles_png, tiles_png_len);
@@ -36,7 +36,7 @@ int main() {
                 }
             }
             if (e.type == sf::Event::MouseButtonPressed) {
-                if ((bx < b.i) && (by < b.j)) {
+                if ((bx < b.length) && (by < b.width)) {
                     if (e.key.code == sf::Mouse::Left) {
                         b.revealCell(bx, by);
                         if (b.isZero(bx, by)) {
@@ -52,27 +52,37 @@ int main() {
                         }
                     }
                 }
-                if ((pos.x > 20) && (pos.x < 188) && (pos.y > 700) && (pos.y < 748)) {
+                /*if ((pos.x > 20) && (pos.x < 188) && (pos.y > 700) && (pos.y < 748)) {
                     if (e.key.code == sf::Mouse::Left) {
                         game.close();
                     }
+                } */
+                if (btn.isButtonPressed(pos.x, pos.y, e, btn.posButton(0,4))) {
+                    game.close();
                 }
             }
         }
         game.clear();
         game.draw(m.outer);
-        for (int i = 0; i < 4; ++i) {
+        for (int i = 0; i < 5; ++i) {
+            for (int j = 0; j < 1; ++j) {
+                btn.GreenRect.setPosition(btn.posButton(j, i));
+                game.draw(btn.GreenRect);
+            }
+        }
+        for (int i = 0; i < 5; ++i) {
             for (int j = 0; j < 1; ++j) {
                 btn.GreenRect.setPosition(btn.posButton(j, i));
                 game.draw(btn.GreenRect);
             }
         }
         game.draw(txt.textNew);
+        game.draw(txt.textResume);
         game.draw(txt.textOption);
         game.draw(txt.textHighScore);
         game.draw(txt.textQuit);
-        for (int i = 0; i < b.i; i++) {
-            for (int j = 0; j < b.j; j++) {
+        for (int i = 0; i < b.length; i++) {
+            for (int j = 0; j < b.width; j++) {
                 b_sprite.setTextureRect(sf::IntRect(b.cell[i][j] * cell_length, 0, cell_length, cell_length));
                 b_sprite.setPosition((i + 1) * cell_length - cell_length, (j + 1) * cell_length - cell_length);
                 game.draw(b_sprite);

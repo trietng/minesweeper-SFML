@@ -1,12 +1,12 @@
 #include "board.h"
 
 board::board() {
-    i = 0;
-    j = 0;
+    length = 0;
+    width = 0;
 }
 board::board(int x, int y) {
-    i = x;
-    j = y;
+    length = x;
+    width = y;
     mem_cell.assign(x, std::vector<int>(y, 0));
     cell.assign(x, std::vector<int>(y, 0));
     setMine();
@@ -20,8 +20,8 @@ board::board(int x, int y) {
     }
 }
 void board::setMine() {
-    for (int a = 0; a < i; ++a) {
-        for (int b = 0; b < j; ++b) {
+    for (int a = 0; a < length; ++a) {
+        for (int b = 0; b < width; ++b) {
             if ((rand() % 5 + 1) == 1) {
                 mem_cell[a][b] = 9;
             }
@@ -65,12 +65,12 @@ bool board::isPositive(int x, int y) {
 }
 void board::setCellNum(int x, int y) {
     int n = 0;
-    if (y < j - 1) {
+    if (y < width - 1) {
         if (checkMine(x, y + 1)) {
             ++n;
         }
     }
-    if (x < i - 1) {
+    if (x < length - 1) {
         if (checkMine(x + 1, y)) {
             ++n;
         }
@@ -85,17 +85,17 @@ void board::setCellNum(int x, int y) {
             ++n;
         }
     }
-    if ((x < i - 1) && (y < j - 1)) {
+    if ((x < length - 1) && (y < width - 1)) {
         if (checkMine(x + 1, y + 1)) {
             ++n;
         }
     }
-    if ((x > 0) && (y < j - 1)) {
+    if ((x > 0) && (y < width - 1)) {
         if (checkMine(x - 1, y + 1)) {
             ++n;
         }
     }
-    if ((y > 0) && (x < i - 1)) {
+    if ((y > 0) && (x < length - 1)) {
         if (checkMine(x + 1, y - 1)) {
             ++n;
         }
@@ -108,18 +108,18 @@ void board::setCellNum(int x, int y) {
     mem_cell[x][y] = n;
 }
 void board::revealCell(int x, int y) {
-    if ((x >= 0) && (y >= 0) && (x <= i - 1) && (y <= j - 1)) {
+    if ((x >= 0) && (y >= 0) && (x <= length - 1) && (y <= width - 1)) {
         cell[x][y] = mem_cell[x][y];
     }
 }
 void board::revealSurroundingZero(int x, int y) {
-    if (y < j - 1) {
+    if (y < width - 1) {
         if (isZero(x, y + 1) && !isRevealed(x, y + 1)) {
             revealCell(x, y + 1);
             revealSurroundingZero(x, y + 1);
         }
     }
-    if (x < i - 1) {
+    if (x < length - 1) {
         if (isZero(x + 1, y) && !isRevealed(x + 1, y)) {
             revealCell(x + 1, y);
             revealSurroundingZero(x + 1, y);
@@ -137,19 +137,19 @@ void board::revealSurroundingZero(int x, int y) {
             revealSurroundingZero(x, y - 1);
         }
     }
-    if ((x < i - 1) && (y < j - 1)) {
+    if ((x < length - 1) && (y < width - 1)) {
         if (isZero(x + 1, y + 1) && !isRevealed(x + 1, y + 1)) {
             revealCell(x + 1, y + 1);
             revealSurroundingZero(x + 1, y + 1);
         }
     }
-    if ((x > 0) && (y < j - 1)) {
+    if ((x > 0) && (y < width - 1)) {
         if (isZero(x - 1, y + 1) && !isRevealed(x - 1, y + 1)) {
             revealCell(x - 1, y + 1);
             revealSurroundingZero(x - 1, y + 1);
         }
     }
-    if ((y > 0) && (x < i - 1)) {
+    if ((y > 0) && (x < length - 1)) {
         if (isZero(x + 1, y - 1) && !isRevealed(x + 1, y - 1)) {
             revealCell(x + 1, y - 1);
             revealSurroundingZero(x + 1, y - 1);
@@ -163,12 +163,12 @@ void board::revealSurroundingZero(int x, int y) {
     }
 }
 void board::revealNearbyPositive(int x, int y) {
-    if (y < j - 1) {
+    if (y < width - 1) {
         if (isPositive(x, y + 1) && !isRevealed(x, y + 1)) {
             revealCell(x, y + 1);
         }
     }
-    if (x < i - 1) {
+    if (x < length - 1) {
         if (isPositive(x + 1, y) && !isRevealed(x + 1, y)) {
             revealCell(x + 1, y);
         }
@@ -183,17 +183,17 @@ void board::revealNearbyPositive(int x, int y) {
             revealCell(x, y - 1);
         }
     }
-    if ((x < i - 1) && (y < j - 1)) {
+    if ((x < length - 1) && (y < width - 1)) {
         if (isPositive(x + 1, y + 1) && !isRevealed(x + 1, y + 1)) {
             revealCell(x + 1, y + 1);
         }
     }
-    if ((x > 0) && (y < j - 1)) {
+    if ((x > 0) && (y < width - 1)) {
         if (!checkMine(x - 1, y + 1) && !isRevealed(x - 1, y + 1)) {
             revealCell(x - 1, y + 1);
         }
     }
-    if ((y > 0) && (x < i - 1)) {
+    if ((y > 0) && (x < length - 1)) {
         if (isPositive(x + 1, y - 1) && !isRevealed(x + 1, y - 1)) {
             revealCell(x + 1, y - 1);
         }
@@ -206,8 +206,8 @@ void board::revealNearbyPositive(int x, int y) {
 }
 void board::revealCellZero(int x, int y) {
     revealSurroundingZero(x, y);
-    for (int a = 0; a < i; ++a) {
-        for (int b = 0; b < j; ++b) {
+    for (int a = 0; a < length; ++a) {
+        for (int b = 0; b < width; ++b) {
             if (isZero(a, b) && isRevealed(a, b)) {
                 revealNearbyPositive(a, b);
             }
@@ -233,8 +233,8 @@ void board::unflagCell(int x, int y) {
     }
 }
 void board::DEBUG_revealAll() {
-    for (int a = 0; a < i; ++a) {
-        for (int b = 0; b < j; ++b) {
+    for (int a = 0; a < length; ++a) {
+        for (int b = 0; b < width; ++b) {
             cell[a][b] = mem_cell[a][b];
         }
     }

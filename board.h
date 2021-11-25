@@ -3,7 +3,7 @@
 
 struct board {
 	std::vector<std::vector<int>> mem_cell, cell;
-	int i, j;
+	int length, width;
 	board();
 	board(int x, int y);
 	void setMine();

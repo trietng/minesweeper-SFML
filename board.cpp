@@ -23,13 +23,10 @@ board::board(int x, int y, int z) {
 void board::setMine(int mines, int &count) {
     for (int a = 0; a < width; ++a) {
         for (int b = 0; b < length; ++b) {
-            if (count < mines) {
+            if ((count < mines) && !checkMine(a, b)) {
                 if ((rand() % 10 + 1) == 1) {
                     mem_cell[a][b] = 9;
                     count++;
-                }
-                else {
-                    mem_cell[a][b] = 0;
                 }
             }
         }

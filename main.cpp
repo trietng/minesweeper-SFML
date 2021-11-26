@@ -35,7 +35,7 @@ int main() {
                 }
             }
             if (e.type == sf::Event::MouseButtonPressed) {
-                if ((bx < b.length) && (by < b.width)) {
+                if ((bx < b.width) && (by < b.length)) {
                     if (e.key.code == sf::Mouse::Left) {
                         if (!b.isFlagged(bx, by)) {
                             b.revealCell(bx, by);
@@ -99,8 +99,8 @@ int main() {
         game.draw(txt.textOption);
         game.draw(txt.textHighScore);
         game.draw(txt.textQuit);
-        for (int i = 0; i < b.length; i++) {
-            for (int j = 0; j < b.width; j++) {
+        for (int i = 0; i < b.width; i++) {
+            for (int j = 0; j < b.length; j++) {
                 b_sprite.setTextureRect(sf::IntRect(b.cell[i][j] * cell_length, 0, cell_length, cell_length));
                 b_sprite.setPosition((i + 1) * cell_length - cell_length, (j + 1) * cell_length - cell_length);
                 game.draw(b_sprite);

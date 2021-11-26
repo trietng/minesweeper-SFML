@@ -4,14 +4,16 @@
 struct board {
 	std::vector<std::vector<int>> mem_cell, cell;
 	int width, length;
+	bool isFirstLeftClick;
 	board();
 	board(int x, int y, int z);
 	void setMine(int mines, int &count);
+	void resetCellNum();
 	bool checkMine(int x, int y);
 	bool isZero(int x, int y);
 	bool isRevealed(int x, int y);
 	bool isPositive(int x, int y);
-	void setCellNum(int x, int y);
+	void countSurroundingMines(int x, int y);
 	void revealCell(int x, int y);
 	void revealSurroundingZero(int x, int y);
 	void revealNearbyPositive(int x, int y);
@@ -19,5 +21,6 @@ struct board {
 	void flagCell(int x, int y);
 	bool isFlagged(int x, int y);
 	void unflagCell(int x, int y);
+	void firstLeftClick(int x, int y);
 	void DEBUG_revealAll();
 };

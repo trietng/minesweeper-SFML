@@ -45,6 +45,9 @@ int main() {
                 if ((bx < b.width) && (by < b.length)) {
                     if (e.key.code == sf::Mouse::Left) {
                         if (!b.isFlagged(bx, by)) {
+                            if (b.isFirstLeftClick == true) {
+                                b.firstLeftClick(bx, by);
+                            }
                             b.revealCell(bx, by);
                             if (b.isZero(bx, by)) {
                                 b.revealCellZero(bx, by);

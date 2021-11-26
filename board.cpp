@@ -3,19 +3,21 @@
 board::board() {
     width = 0;
     length = 0;
+    isFirstLeftClick = true;
 }
 board::board(int x, int y, int z) {
     width = x;
     length = y;
     mem_cell.assign(x, std::vector<int>(y, 0));
     cell.assign(x, std::vector<int>(y, 0));
+    isFirstLeftClick = true;
     int count = 0;
     setMine(z, count);
     for (int a = 0; a < x; ++a) {
         for (int b = 0; b < y; ++b) {
             cell[a][b] = 10;
             if (!checkMine(a, b)) {
-                setCellNum(a, b);
+                countSurroundingMines(a, b);
             }
         }
     }
@@ -29,10 +31,22 @@ void board::setMine(int mines, int &count) {
                     count++;
                 }
             }
+            if (mines == count) {
+                break;
+            }
         }
     }
     if (count < mines) {
         setMine(mines, count);
+    }
+}
+void board::resetCellNum() {
+    for (int a = 0; a < width; ++a) {
+        for (int b = 0; b < length; ++b) {
+            if (!checkMine(a, b)) {
+                countSurroundingMines(a, b);
+            }
+        }
     }
 }
 bool board::checkMine(int x, int y) {
@@ -67,7 +81,7 @@ bool board::isPositive(int x, int y) {
         return false;
     }
 }
-void board::setCellNum(int x, int y) {
+void board::countSurroundingMines(int x, int y) {
     int n = 0;
     if (y < length - 1) {
         if (checkMine(x, y + 1)) {
@@ -234,6 +248,21 @@ bool board::isFlagged(int x, int y) {
 void board::unflagCell(int x, int y) {
     if (isFlagged(x, y)) {
         cell[x][y] = 10;
+    }
+}
+void board::firstLeftClick(int x, int y) {
+    int mx = rand() % width, my = rand() % length;
+    if (isFirstLeftClick) {
+        if (checkMine(x, y)) {
+            mem_cell[x][y] = 0;
+            while ((mx == x) || (my == y) || checkMine(mx, my)) {
+                mx = rand() % width;
+                my = rand() % length;
+            }
+            mem_cell[mx][my] = 9;
+            resetCellNum();
+        }
+        isFirstLeftClick = false;
     }
 }
 void board::DEBUG_revealAll() {

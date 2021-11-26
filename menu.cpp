@@ -1,6 +1,7 @@
 ﻿#include "menu.h"
 
 menu::menu() {
+    //Menu's outer green box
     outer.setSize(sf::Vector2f(1000, 356));
     outer.setPosition(sf::Vector2f(12, 524));
     outer.setFillColor(sf::Color::Black);
@@ -90,7 +91,10 @@ sf::Vector2f button::posButton(int x, int y) {
 }
 
 bool button::isButtonPressed(int x, int y, sf::Event e, sf::Vector2f p) {
-    int a = p.x - 4, b = a + 168, c = p.y - 4, d = c + 48;
+    int a = p.x - 4;
+    int c = p.y - 4;
+    int b = a + 168;
+    int d = c + 48;
     if ((x > a) && (x < b) && (y > c) && (y < d)) {
         if (e.key.code == sf::Mouse::Left) {
             return true;
@@ -98,3 +102,10 @@ bool button::isButtonPressed(int x, int y, sf::Event e, sf::Vector2f p) {
     }
     return false;
 }
+/*
+void deltatime() {
+    sf::Clock clock;
+    sf::Time elapsed1 = clock.getElapsedTime();
+    std::cout << elapsed1.asSeconds() << std::endl;
+}
+*/

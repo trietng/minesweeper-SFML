@@ -1,6 +1,7 @@
 #pragma once
 #include <SFML\Graphics.hpp>
 #include "consola.h"
+#include <iostream>
 const sf::Vector2f button_size = sf::Vector2f(160, 40);
 
 struct menu {

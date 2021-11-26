@@ -1,4 +1,5 @@
 #include <SFML/Graphics.hpp>
+//#include <SFML/System/Time.hpp>
 #include <ctime>
 #include "tiles.h"
 #include "board.h"
@@ -57,6 +58,7 @@ int main() {
                     isNewPressed = true;
                 }
                 if ((isNewPressed) && (btn.isButtonPressed(pos.x, pos.y, e, btn.posButton(1, 0)))) {        //Easy
+
                     b = board(9, 9);
                     //clear menu
                     //isNewPressed = false;
@@ -67,46 +69,51 @@ int main() {
                 if ((isNewPressed) && (btn.isButtonPressed(pos.x, pos.y, e, btn.posButton(3, 0)))) {        //Hard
                     b = board(32, 16);
                 }
-                if (btn.isButtonPressed(pos.x, pos.y, e, btn.posButton(0,4))) {                             //Quit
-                    game.close();
+                if ((isNewPressed) && (btn.isButtonPressed(pos.x, pos.y, e, btn.posButton(4, 0)))) {        //Custom
+
+                    b = board();
+                    if (btn.isButtonPressed(pos.x, pos.y, e, btn.posButton(0, 4))) {                             //Quit
+                        game.close();
+                    }
                 }
             }
-        }
-        game.clear();
-        game.draw(m.outer);
-        game.draw(m.separator);
-        //draw save button
-        btn.GreenRect.setPosition(btn.posButton(0, -1));
-        game.draw(btn.GreenRect);
-        game.draw(txt.textSave);
-        //draw gamemode menu
-        if (isNewPressed) {
-            for (int i = 1; i < 5; ++i) {
-                btn.GreenRect.setPosition(btn.posButton(i, 0));
+            game.clear();
+            game.draw(m.outer);
+            game.draw(m.separator);
+            //Draw save button
+            btn.GreenRect.setPosition(btn.posButton(0, -1));
+            game.draw(btn.GreenRect);
+            game.draw(txt.textSave);
+            //Draw gamemode menu
+            if (isNewPressed) {
+                for (int i = 1; i < 5; ++i) {
+                    btn.GreenRect.setPosition(btn.posButton(i, 0));
+                    game.draw(btn.GreenRect);
+                }
+                game.draw(txt.textEasy);
+                game.draw(txt.textMedium);
+                game.draw(txt.textHard);
+                game.draw(txt.textCustom);
+            }
+            //Draw menu buttons
+            for (int i = 0; i < 5; ++i) {
+                btn.GreenRect.setPosition(btn.posButton(0, i));
                 game.draw(btn.GreenRect);
             }
-            game.draw(txt.textEasy);
-            game.draw(txt.textMedium);
-            game.draw(txt.textHard);
-            game.draw(txt.textCustom);
-        }
-        for (int i = 0; i < 5; ++i) {
-            btn.GreenRect.setPosition(btn.posButton(0, i));
-            game.draw(btn.GreenRect);
-        }
-        game.draw(txt.textNew);
-        game.draw(txt.textResume);
-        game.draw(txt.textOption);
-        game.draw(txt.textHighScore);
-        game.draw(txt.textQuit);
-        for (int i = 0; i < b.width; i++) {
-            for (int j = 0; j < b.length; j++) {
-                b_sprite.setTextureRect(sf::IntRect(b.cell[i][j] * cell_length, 0, cell_length, cell_length));
-                b_sprite.setPosition((i + 1) * cell_length - cell_length, (j + 1) * cell_length - cell_length);
-                game.draw(b_sprite);
+            game.draw(txt.textNew);
+            game.draw(txt.textResume);
+            game.draw(txt.textOption);
+            game.draw(txt.textHighScore);
+            game.draw(txt.textQuit);
+            for (int i = 0; i < b.width; i++) {
+                for (int j = 0; j < b.length; j++) {
+                    b_sprite.setTextureRect(sf::IntRect(b.cell[i][j] * cell_length, 0, cell_length, cell_length));
+                    b_sprite.setPosition(i * cell_length, (j + 1) * cell_length - cell_length);
+                    game.draw(b_sprite);
+                }
             }
+            game.display();
         }
-        game.display();
+        return 0;
     }
-    return 0;
 }

@@ -3,7 +3,9 @@
 #include "tiles.h"
 #include "board.h"
 #include "menu.h"
+#include <iostream>
 const int cell_length = 32;
+using namespace std;
 
 int main() {
     srand(time(0));
@@ -17,7 +19,9 @@ int main() {
     menu m = menu();
     text txt = text();
     button btn = button();
-    bool isNewPressed = false, isCustomPressed = false;
+    int dt = 0, lastTime = 0, currentTime = 0, realTime = 0;
+    sf::Clock clock;
+    bool isNewPressed = false, isCustomPressed = false, isModePresed= false, isFirstTime = true;
     while (game.isOpen())
     {
         sf::Vector2i pos = sf::Mouse::getPosition(game);
@@ -31,6 +35,9 @@ int main() {
             }
             if (e.type == sf::Event::KeyPressed) {
                 if (e.key.code == sf::Keyboard::R) {
+                    b.DEBUG_revealAll();
+                }
+                if (e.key.code == sf::Keyboard::D) {
                     b.DEBUG_revealAll();
                 }
             }
@@ -57,15 +64,16 @@ int main() {
                     isNewPressed = true;
                 }
                 if ((isNewPressed) && (btn.isButtonPressed(pos.x, pos.y, e, btn.posButton(1, 0)))) {        //Easy
-                    b = board(9, 9);
-                    //clear menu
-                    //isNewPressed = false;
+                    b = board(9, 9, 10);
+                    isModePresed = true;
                 }
                 if ((isNewPressed) && (btn.isButtonPressed(pos.x, pos.y, e, btn.posButton(2, 0)))) {        //Medium
-                    b = board(16, 16);
+                    b = board(16, 16, 40);
+                    isModePresed = true;
                 }
                 if ((isNewPressed) && (btn.isButtonPressed(pos.x, pos.y, e, btn.posButton(3, 0)))) {        //Hard
-                    b = board(32, 16);
+                    b = board(32, 16, 99);
+                    isModePresed = true;
                 }
                 if (btn.isButtonPressed(pos.x, pos.y, e, btn.posButton(0,4))) {                             //Quit
                     game.close();
@@ -73,12 +81,29 @@ int main() {
             }
         }
         game.clear();
+        if (isModePresed) {
+            if (isFirstTime) {
+                clock.restart();
+                isFirstTime = false;
+            }
+            dt = clock.getElapsedTime().asSeconds();
+            lastTime = currentTime;
+            currentTime = dt;
+            if (currentTime > lastTime) {
+                realTime = dt;
+            }
+        }
         game.draw(m.outer);
         game.draw(m.separator);
-        //draw save button
+        //Draw save button
         btn.GreenRect.setPosition(btn.posButton(0, -1));
         game.draw(btn.GreenRect);
         game.draw(txt.textSave);
+        //Draw time
+        btn.GreenRect.setPosition(btn.posButton(4, -1));
+        game.draw(btn.GreenRect);
+        txt.textTimer.setString(std::to_string(realTime));
+        game.draw(txt.textTimer);
         //draw gamemode menu
         if (isNewPressed) {
             for (int i = 1; i < 5; ++i) {
@@ -108,5 +133,7 @@ int main() {
         }
         game.display();
     }
+    
     return 0;
 }
+

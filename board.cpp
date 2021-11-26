@@ -4,12 +4,13 @@ board::board() {
     width = 0;
     length = 0;
 }
-board::board(int x, int y) {
+board::board(int x, int y, int z) {
     width = x;
     length = y;
     mem_cell.assign(x, std::vector<int>(y, 0));
     cell.assign(x, std::vector<int>(y, 0));
-    setMine();
+    int count = 0;
+    setMine(z, count);
     for (int a = 0; a < x; ++a) {
         for (int b = 0; b < y; ++b) {
             cell[a][b] = 10;
@@ -19,16 +20,22 @@ board::board(int x, int y) {
         }
     }
 }
-void board::setMine() {
+void board::setMine(int mines, int &count) {
     for (int a = 0; a < width; ++a) {
         for (int b = 0; b < length; ++b) {
-            if ((rand() % 5 + 1) == 1) {
-                mem_cell[a][b] = 9;
-            }
-            else {
-                mem_cell[a][b] = 0;
+            if (count < mines) {
+                if ((rand() % 10 + 1) == 1) {
+                    mem_cell[a][b] = 9;
+                    count++;
+                }
+                else {
+                    mem_cell[a][b] = 0;
+                }
             }
         }
+    }
+    if (count < mines) {
+        setMine(mines, count);
     }
 }
 bool board::checkMine(int x, int y) {

@@ -67,6 +67,10 @@ text::text() {
     textSave.setCharacterSize(24);
     textSave.setFillColor(sf::Color::Green);
     textSave.setPosition(posText(0, -1));
+    textTimer.setFont(fontConsola);
+    textTimer.setCharacterSize(24);
+    textTimer.setFillColor(sf::Color::Green);
+    textTimer.setPosition(posText(4, -1));
 }
 
 sf::Vector2f text::posText(int x, int y) {

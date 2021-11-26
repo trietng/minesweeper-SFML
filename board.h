@@ -5,8 +5,8 @@ struct board {
 	std::vector<std::vector<int>> mem_cell, cell;
 	int width, length;
 	board();
-	board(int x, int y);
-	void setMine();
+	board(int x, int y, int z);
+	void setMine(int mines, int &count);
 	bool checkMine(int x, int y);
 	bool isZero(int x, int y);
 	bool isRevealed(int x, int y);

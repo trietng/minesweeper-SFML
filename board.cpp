@@ -16,7 +16,7 @@ board::board(int x, int y, int z) {
     for (int a = 0; a < x; ++a) {
         for (int b = 0; b < y; ++b) {
             cell[a][b] = 10;
-            if (!checkMine(a, b)) {
+            if (!isMine(a, b)) {
                 countSurroundingMines(a, b);
             }
         }
@@ -25,7 +25,7 @@ board::board(int x, int y, int z) {
 void board::setMine(int mines, int &count) {
     for (int a = 0; a < width; ++a) {
         for (int b = 0; b < length; ++b) {
-            if ((count < mines) && !checkMine(a, b)) {
+            if ((count < mines) && !isMine(a, b)) {
                 if ((rand() % 10 + 1) == 1) {
                     mem_cell[a][b] = 9;
                     count++;
@@ -43,13 +43,13 @@ void board::setMine(int mines, int &count) {
 void board::resetCellNum() {
     for (int a = 0; a < width; ++a) {
         for (int b = 0; b < length; ++b) {
-            if (!checkMine(a, b)) {
+            if (!isMine(a, b)) {
                 countSurroundingMines(a, b);
             }
         }
     }
 }
-bool board::checkMine(int x, int y) {
+bool board::isMine(int x, int y) {
     if (mem_cell[x][y] == 9) {
         return true;
     }
@@ -84,42 +84,42 @@ bool board::isPositive(int x, int y) {
 void board::countSurroundingMines(int x, int y) {
     int n = 0;
     if (y < length - 1) {
-        if (checkMine(x, y + 1)) {
+        if (isMine(x, y + 1)) {
             ++n;
         }
     }
     if (x < width - 1) {
-        if (checkMine(x + 1, y)) {
+        if (isMine(x + 1, y)) {
             ++n;
         }
     }
     if (x > 0) {
-        if (checkMine(x - 1, y)) {
+        if (isMine(x - 1, y)) {
             ++n;
         }
     }
     if (y > 0) {
-        if (checkMine(x, y - 1)) {
+        if (isMine(x, y - 1)) {
             ++n;
         }
     }
     if ((x < width - 1) && (y < length - 1)) {
-        if (checkMine(x + 1, y + 1)) {
+        if (isMine(x + 1, y + 1)) {
             ++n;
         }
     }
     if ((x > 0) && (y < length - 1)) {
-        if (checkMine(x - 1, y + 1)) {
+        if (isMine(x - 1, y + 1)) {
             ++n;
         }
     }
     if ((y > 0) && (x < width - 1)) {
-        if (checkMine(x + 1, y - 1)) {
+        if (isMine(x + 1, y - 1)) {
             ++n;
         }
     }
     if ((y > 0) && (x > 0)) {
-        if (checkMine(x - 1, y - 1)) {
+        if (isMine(x - 1, y - 1)) {
             ++n;
         }
     }
@@ -207,7 +207,7 @@ void board::revealNearbyPositive(int x, int y) {
         }
     }
     if ((x > 0) && (y < length - 1)) {
-        if (!checkMine(x - 1, y + 1) && !isRevealed(x - 1, y + 1)) {
+        if (!isMine(x - 1, y + 1) && !isRevealed(x - 1, y + 1)) {
             revealCell(x - 1, y + 1);
         }
     }
@@ -253,9 +253,9 @@ void board::unflagCell(int x, int y) {
 void board::firstLeftClick(int x, int y) {
     int mx = rand() % width, my = rand() % length;
     if (isFirstLeftClick) {
-        if (checkMine(x, y)) {
+        if (isMine(x, y)) {
             mem_cell[x][y] = 0;
-            while ((mx == x) || (my == y) || checkMine(mx, my)) {
+            while ((mx == x) || (my == y) || isMine(mx, my)) {
                 mx = rand() % width;
                 my = rand() % length;
             }

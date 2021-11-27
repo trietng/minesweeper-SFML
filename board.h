@@ -9,7 +9,7 @@ struct board {
 	board(int x, int y, int z);
 	void setMine(int mines, int &count);
 	void resetCellNum();
-	bool checkMine(int x, int y);
+	bool isMine(int x, int y);
 	bool isZero(int x, int y);
 	bool isRevealed(int x, int y);
 	bool isPositive(int x, int y);

@@ -71,9 +71,12 @@ text::text() {
     textTimer.setCharacterSize(24);
     textTimer.setFillColor(sf::Color::Green);
     textTimer.setPosition(posText(4, -1));
+    textEnd.setFont(fontConsola);
+    textEnd.setCharacterSize(40);
+    
 }
 
-sf::Vector2f text::posText(int x, int y) {
+sf::Vector2f text::posText(float x, float y) {
     if (y == -1) {
         return sf::Vector2f(36 + x * 204, 540);
     }
@@ -85,6 +88,11 @@ button::button() {
     GreenRect.setFillColor(sf::Color::Black);
     GreenRect.setOutlineThickness(4.f);
     GreenRect.setOutlineColor(sf::Color::Green);
+    TriGreenRect.setSize(sf::Vector2f(568, 40));
+    TriGreenRect.setFillColor(sf::Color::Black);
+    TriGreenRect.setOutlineThickness(4.f);
+    TriGreenRect.setOutlineColor(sf::Color::Green);
+    TriGreenRect.setPosition(posButton(1, -1));
 }
 sf::Vector2f button::posButton(int x, int y) {
     if (y == -1) {

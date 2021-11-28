@@ -12,14 +12,14 @@ struct menu {
 };
 
 struct text {
-    sf::Text textNew, textResume, textOption, textHighScore, textQuit, textEasy, textMedium, textHard, textCustom, textSave, textTimer;
+    sf::Text textNew, textResume, textOption, textHighScore, textQuit, textEasy, textMedium, textHard, textCustom, textSave, textTimer, textEnd;
     sf::Font fontConsola;
     text();
-    sf::Vector2f posText(int x, int y);
+    sf::Vector2f posText(float x, float y);
 };
 
 struct button {
-    sf::RectangleShape GreenRect;
+    sf::RectangleShape GreenRect, TriGreenRect;
     button();
     sf::Vector2f posButton(int x, int y);
     bool isButtonPressed(int x, int y, sf::Event e, sf::Vector2f p);

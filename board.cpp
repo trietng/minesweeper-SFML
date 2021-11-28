@@ -3,13 +3,23 @@
 board::board() {
     width = 0;
     length = 0;
+    size = 0;
+    countRevealedCells = 0;
+    mines = 0;
+    isFailure = false;
+    isVictory = false;
     isFirstLeftClick = true;
 }
 board::board(int x, int y, int z) {
     width = x;
     length = y;
+    size = x * y;
+    mines = z;
+    countRevealedCells = 0;
     mem_cell.assign(x, std::vector<int>(y, 0));
     cell.assign(x, std::vector<int>(y, 0));
+    isFailure = false;
+    isVictory = false;
     isFirstLeftClick = true;
     int count = 0;
     setMine(z, count);
@@ -128,6 +138,7 @@ void board::countSurroundingMines(int x, int y) {
 void board::revealCell(int x, int y) {
     if ((x >= 0) && (y >= 0) && (x <= width - 1) && (y <= length - 1)) {
         cell[x][y] = mem_cell[x][y];
+        countRevealedCells++;
     }
 }
 void board::revealSurroundingZero(int x, int y) {
@@ -250,7 +261,7 @@ void board::unflagCell(int x, int y) {
         cell[x][y] = 10;
     }
 }
-void board::firstLeftClick(int x, int y) {
+void board::swapMine(int x, int y) {
     int mx = rand() % width, my = rand() % length;
     if (isFirstLeftClick) {
         if (isMine(x, y)) {
@@ -264,6 +275,12 @@ void board::firstLeftClick(int x, int y) {
         }
         isFirstLeftClick = false;
     }
+}
+bool board::endGame() {
+    if ((isFailure) || (isVictory)) {
+        return true;
+    }
+    return false;
 }
 void board::DEBUG_revealAll() {
     for (int a = 0; a < width; ++a) {

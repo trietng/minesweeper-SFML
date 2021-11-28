@@ -1,7 +1,6 @@
 ﻿#include "menu.h"
 
-menu::menu() {
-    bool isClearMenu = false;                                                              //Outer line of menu
+menu::menu() {                                                            //Outer line of menu
     outer.setSize(sf::Vector2f(1000, 356));
     outer.setPosition(sf::Vector2f(12, 524));
     outer.setFillColor(sf::Color::Black);
@@ -11,6 +10,9 @@ menu::menu() {
     separator.setSize(sf::Vector2f(1000, 4));
     separator.setPosition(sf::Vector2f(12, 588));
     separator.setFillColor(sf::Color::Green);
+    //40 px vertical line
+    line40px.setSize(sf::Vector2f(4, 40));
+    line40px.setFillColor(sf::Color::Green);
 }
 
 text::text() {
@@ -72,7 +74,15 @@ text::text() {
     textTimer.setPosition(posText(4, -1));
     textEnd.setFont(fontConsola);
     textEnd.setCharacterSize(40);
-    
+    textName.setFont(fontConsola);
+    textName.setCharacterSize(24);
+    textName.setFillColor(sf::Color::Green);
+    textName.setPosition(posText(1, 0));
+    textName.setString("Enter your name");
+    textPlayer.setFont(fontConsola);
+    textPlayer.setCharacterSize(24);
+    textPlayer.setFillColor(sf::Color::Green);
+    textPlayer.setPosition(posText(2.2, 0));
 }
 
 sf::Vector2f text::posText(float x, float y) {
@@ -92,8 +102,13 @@ button::button() {
     TriGreenRect.setOutlineThickness(4.f);
     TriGreenRect.setOutlineColor(sf::Color::Green);
     TriGreenRect.setPosition(posButton(1, -1));
+    DuoGreenRect.setSize(sf::Vector2f(364, 40));
+    DuoGreenRect.setFillColor(sf::Color::Black);
+    DuoGreenRect.setOutlineThickness(4.f);
+    DuoGreenRect.setOutlineColor(sf::Color::Green);
+    DuoGreenRect.setPosition(posButton(1, 0));
 }
-sf::Vector2f button::posButton(int x, int y) {
+sf::Vector2f button::posButton(float x, float y) {
     if (y == -1) {
         return sf::Vector2f(24 + x * 204, 536);
     }

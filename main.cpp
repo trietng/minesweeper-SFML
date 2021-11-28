@@ -21,7 +21,8 @@ int main() {
     button btn = button();
     int deltaTime = 0, lastTime = 0, currentTime = 0, realTime = 0;
     sf::Clock clock;
-    bool isNewPressed = false, isCustomPressed = false, isModePressed = false, isFirstTime = true;
+    sf::String playerInput;
+    bool isNewPressed = false, isCustomPressed = false, isModePressed = false, openNameDialog = false;
     while (game.isOpen())
     {
         sf::Vector2i pos = sf::Mouse::getPosition(game);
@@ -70,12 +71,20 @@ int main() {
                         }
                         if (b.mines == b.size - b.countRevealedCells) {                                     //Victory
                             b.isGameRunning = false;
-                            b.isVictory = true;
+                            if (!b.isFailure) {
+                                b.isVictory = true;
+                                openNameDialog = true;
+                            }
                         }
                     }
                 }
-                if (btn.isButtonPressed(pos.x, pos.y, e, btn.posButton(0, 0))) {                            //New Game
-                    isNewPressed = true;
+                if (btn.isButtonPressed(pos.x, pos.y, e, btn.posButton(0, 0))) {
+                    if (!isNewPressed) {
+                        isNewPressed = true;
+                    }
+                    else {
+                        isNewPressed = false;
+                    }
                 }
                 if ((isNewPressed) && (btn.isButtonPressed(pos.x, pos.y, e, btn.posButton(1, 0)))) {        //Easy
                     b = board(9, 9, 10);
@@ -95,6 +104,22 @@ int main() {
                 if (btn.isButtonPressed(pos.x, pos.y, e, btn.posButton(0,4))) {                             //Quit
                     game.close();
                 }
+            }
+            if (b.isVictory) {
+                if (e.type == sf::Event::TextEntered) {
+                    if (playerInput.getSize() < 6) {
+                        if (e.text.unicode > 32 && e.text.unicode < 127) {
+                            playerInput += e.text.unicode;
+                            txt.textPlayer.setString(playerInput);
+                        }
+                    }
+                }/*
+                if (playerInput.getSize() == 6) {
+                    std::cout << playerInput.toAnsiString() << "\n"; //demo text input
+                    playerInput.clear();
+                    txt.textPlayer.setString("");
+                    b.isVictory = false;
+                }*/
             }
         }
         game.clear();
@@ -162,7 +187,19 @@ int main() {
             txt.textEnd.setString("VICTORY!");
             game.draw(txt.textEnd);
         }
-
+        if (openNameDialog) {
+            game.draw(btn.DuoGreenRect);
+            m.line40px.setPosition(btn.posButton(2.06, 0));
+            game.draw(m.line40px);
+            game.draw(txt.textName);
+            game.draw(txt.textPlayer);
+            if (playerInput.getSize() == 6) {
+                std::cout << playerInput.toAnsiString() << "\n"; //demo text input
+                playerInput.clear();
+                txt.textPlayer.setString("");
+                openNameDialog = false;
+            }
+        }
         for (int i = 0; i < b.width; i++) {                                                                         //Draw cells
             for (int j = 0; j < b.length; j++) {
                 b_sprite.setTextureRect(sf::IntRect(b.cell[i][j] * cell_length, 0, cell_length, cell_length));

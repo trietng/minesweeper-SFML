@@ -21,7 +21,7 @@ int main() {
     button btn = button();
     int deltaTime = 0, lastTime = 0, currentTime = 0, realTime = 0;
     sf::Clock clock;
-    bool isNewPressed = false, isCustomPressed = false, isModePresed = false, isFirstTime = true;
+    bool isNewPressed = false, isCustomPressed = false, isModePressed = false, isFirstTime = true;
     while (game.isOpen())
     {
         sf::Vector2i pos = sf::Mouse::getPosition(game);
@@ -44,29 +44,32 @@ int main() {
             if (e.type == sf::Event::MouseButtonPressed) {
                 if ((bx < b.width) && (by < b.length)) {
                     if (!b.endGame()) {
-                        if (e.key.code == sf::Mouse::Left) {
+                        if (e.key.code == sf::Mouse::Left) {                    
                             if (!b.isFlagged(bx, by)) {
                                 if (b.isFirstLeftClick) {
                                     b.swapMine(bx, by);
                                 }
                                 b.revealCell(bx, by);
                                 if (b.isMine(bx, by)) {
-                                    b.isFailure = true;
+                                    b.isFailure = true;                                                     //Hit a mine
+                                    b.isGameRunning = false;
                                 }
                                 if (b.isZero(bx, by)) {
                                     b.revealCellZero(bx, by);
                                 }
                             }
                         }
-                        if (e.key.code == sf::Mouse::Right) {       //Flagging
+                        if (e.key.code == sf::Mouse::Right) {                                               //Flagging
                             if (b.isFlagged(bx, by)) {
                                 b.unflagCell(bx, by);
                             }
                             else {
                                 b.flagCell(bx, by);
                             }
+
                         }
-                        if (b.mines == b.size - b.countRevealedCells) {
+                        if (b.mines == b.size - b.countRevealedCells) {                                     //Victory
+                            b.isGameRunning = false;
                             b.isVictory = true;
                         }
                     }
@@ -76,15 +79,15 @@ int main() {
                 }
                 if ((isNewPressed) && (btn.isButtonPressed(pos.x, pos.y, e, btn.posButton(1, 0)))) {        //Easy
                     b = board(9, 9, 10);
-                    isModePresed = true;
+                    isModePressed = true;
                 }
                 if ((isNewPressed) && (btn.isButtonPressed(pos.x, pos.y, e, btn.posButton(2, 0)))) {        //Medium
                     b = board(16, 16, 40);
-                    isModePresed = true;
+                    isModePressed = true;
                 }
                 if ((isNewPressed) && (btn.isButtonPressed(pos.x, pos.y, e, btn.posButton(3, 0)))) {        //Hard
                     b = board(32, 16, 99);
-                    isModePresed = true;
+                    isModePressed = true;
                 }
                 if ((isNewPressed) && (btn.isButtonPressed(pos.x, pos.y, e, btn.posButton(4, 0)))) {        //Custom
 
@@ -95,10 +98,11 @@ int main() {
             }
         }
         game.clear();
-        if ((isModePresed) && (!b.endGame())) {
-            if (isFirstTime) {
+        if (b.isGameRunning) {                                                                              //Game is running
+            if (isModePressed) {
                 clock.restart();
-                isFirstTime = false;
+                isNewPressed = false;
+                isModePressed = false;
             }
             deltaTime = clock.getElapsedTime().asSeconds();
             lastTime = currentTime;
@@ -107,20 +111,24 @@ int main() {
                 realTime = deltaTime;
             }
         }
+        //Draw menu outline
         game.draw(m.outer);
         game.draw(m.separator);
+
         //Draw save button
         btn.GreenRect.setPosition(btn.posButton(0, -1));
         game.draw(btn.GreenRect);
         game.draw(txt.textSave);
+
         //Draw time
         btn.GreenRect.setPosition(btn.posButton(4, -1));
         game.draw(btn.GreenRect);
         txt.textTimer.setString(std::to_string(realTime));
         game.draw(txt.textTimer);
+
         //Draw gamemode menu
         if (isNewPressed) {
-            for (int i = 1; i < 5; ++i) {
+            for (int i = 1; i < 5; ++i) {                                               
                 btn.GreenRect.setPosition(btn.posButton(i, 0));
                 game.draw(btn.GreenRect);
             }
@@ -129,7 +137,8 @@ int main() {
             game.draw(txt.textHard);
             game.draw(txt.textCustom);
         }
-        for (int i = 0; i < 5; ++i) {
+
+        for (int i = 0; i < 5; ++i) {                                    //Draw menu buttons
             btn.GreenRect.setPosition(btn.posButton(0, i));
             game.draw(btn.GreenRect);
         }
@@ -138,10 +147,10 @@ int main() {
         game.draw(txt.textOption);
         game.draw(txt.textHighScore);
         game.draw(txt.textQuit);
-        // Draw status button
-        game.draw(btn.TriGreenRect);
-        // Draw victory or failure text
-        if (b.isFailure) {
+                                                                 
+        game.draw(btn.TriGreenRect);                                     // Draw status button
+                                                                 
+        if (b.isFailure) {                                               // Draw victory or failure text
             txt.textEnd.setFillColor(sf::Color::Red);
             txt.textEnd.setPosition(txt.posText(1.8, -1.4));
             txt.textEnd.setString("GAME OVER!");
@@ -153,7 +162,8 @@ int main() {
             txt.textEnd.setString("VICTORY!");
             game.draw(txt.textEnd);
         }
-        for (int i = 0; i < b.width; i++) {
+
+        for (int i = 0; i < b.width; i++) {                                                                         //Draw cells
             for (int j = 0; j < b.length; j++) {
                 b_sprite.setTextureRect(sf::IntRect(b.cell[i][j] * cell_length, 0, cell_length, cell_length));
                 b_sprite.setPosition(i * cell_length, j * cell_length);
@@ -164,4 +174,3 @@ int main() {
     }
     return 0;
 }
-

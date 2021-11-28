@@ -8,9 +8,11 @@ board::board() {
     mines = 0;
     isFailure = false;
     isVictory = false;
-    isFirstLeftClick = true;
+    isFirstLeftClick = false;
+    isGameRunning = false;
 }
 board::board(int x, int y, int z) {
+    isGameRunning = true;
     width = x;
     length = y;
     size = x * y;
@@ -76,11 +78,11 @@ bool board::isZero(int x, int y) {
     }
 }
 bool board::isRevealed(int x, int y) {
-    if (cell[x][y] != 10) {
-        return true;
+    if (cell[x][y] == 10) {
+        return false;
     }
     else {
-        return false;
+        return true;
     }
 }
 bool board::isPositive(int x, int y) {
@@ -136,7 +138,7 @@ void board::countSurroundingMines(int x, int y) {
     mem_cell[x][y] = n;
 }
 void board::revealCell(int x, int y) {
-    if ((x >= 0) && (y >= 0) && (x <= width - 1) && (y <= length - 1)) {
+    if ((x >= 0) && (y >= 0) && (x <= width - 1) && (y <= length - 1) && !isRevealed(x, y)) {
         cell[x][y] = mem_cell[x][y];
         countRevealedCells++;
     }

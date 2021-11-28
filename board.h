@@ -4,7 +4,7 @@
 struct board {
 	std::vector<std::vector<int>> mem_cell, cell;
 	int width, length, countRevealedCells, mines, size;
-	bool isFirstLeftClick, isVictory, isFailure;
+	bool isFirstLeftClick, isVictory, isFailure, isGameRunning;
 	board();
 	board(int x, int y, int z);
 	void setMine(int mines, int &count);

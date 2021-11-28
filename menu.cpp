@@ -1,13 +1,12 @@
 ﻿#include "menu.h"
 
 menu::menu() {
+    bool isClearMenu = false;                                                              //Outer line of menu
     outer.setSize(sf::Vector2f(1000, 356));
     outer.setPosition(sf::Vector2f(12, 524));
     outer.setFillColor(sf::Color::Black);
     outer.setOutlineThickness(4.f);
     outer.setOutlineColor(sf::Color::Green);
-    //Black rectangle
-    
     //Separator line
     separator.setSize(sf::Vector2f(1000, 4));
     separator.setPosition(sf::Vector2f(12, 588));

@@ -7,7 +7,7 @@ const sf::Vector2f button_size = sf::Vector2f(160, 40);
 
 
 struct menu {
-    sf::RectangleShape outer, BlackRect, separator;
+    sf::RectangleShape outer, separator;
     menu();
 };
 
@@ -24,4 +24,3 @@ struct button {
     sf::Vector2f posButton(int x, int y);
     bool isButtonPressed(int x, int y, sf::Event e, sf::Vector2f p);
 };
-

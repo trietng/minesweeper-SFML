@@ -16,7 +16,9 @@ struct game {
 	menu m;
 	text txt;
 	button btn;
+	custom_value cval;
 	int deltaTime, lastTime, currentTime, realTime;
 	bool isNewPressed, isCustomPressed, isModePressed, openNameDialog;
 	game();
 };
+

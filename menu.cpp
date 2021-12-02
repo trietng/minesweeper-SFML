@@ -17,79 +17,128 @@ menu::menu() {                                                            //Oute
 
 text::text() {
     fontConsola.loadFromMemory(consola_ttf_font, consola_ttf_font_length);
-    textNew.setFont(fontConsola);
-    textNew.setString("New game");
-    textNew.setCharacterSize(24);
-    textNew.setFillColor(sf::Color::Green);
-    textNew.setPosition(posText(0, 0));
-    textResume.setFont(fontConsola);
-    textResume.setString("Resume");
-    textResume.setCharacterSize(24);
-    textResume.setFillColor(sf::Color::Green);
-    textResume.setPosition(posText(0, 1));
-    textHighScore.setFont(fontConsola);
-    textOption.setFont(fontConsola);
-    textOption.setString("Options");
-    textOption.setCharacterSize(24);
-    textOption.setFillColor(sf::Color::Green);
-    textOption.setPosition(posText(0, 2));
-    textHighScore.setString("High score");
-    textHighScore.setCharacterSize(24);
-    textHighScore.setFillColor(sf::Color::Green);
-    textHighScore.setPosition(posText(0, 3));
-    textOption.setFont(fontConsola);
-    textQuit.setString("Quit");
-    textQuit.setCharacterSize(24);
-    textQuit.setFillColor(sf::Color::Green);
-    textQuit.setPosition(posText(0, 4));
-    textQuit.setFont(fontConsola);
-    textEasy.setString("Easy");
-    textEasy.setCharacterSize(24);
-    textEasy.setFillColor(sf::Color::Green);
-    textEasy.setPosition(posText(1, 0));
-    textEasy.setFont(fontConsola);
-    textMedium.setString("Medium");
-    textMedium.setCharacterSize(24);
-    textMedium.setFillColor(sf::Color::Green);
-    textMedium.setPosition(posText(2, 0));
-    textMedium.setFont(fontConsola);
-    textHard.setFont(fontConsola);
-    textHard.setString("Hard");
-    textHard.setCharacterSize(24);
-    textHard.setFillColor(sf::Color::Green);
-    textHard.setPosition(posText(3, 0));
-    textCustom.setFont(fontConsola);
-    textCustom.setString("Custom");
-    textCustom.setCharacterSize(24);
-    textCustom.setFillColor(sf::Color::Green);
-    textCustom.setPosition(posText(4, 0));
+    
+    textMainMenu.setFont(fontConsola);
+    textMainMenu.setCharacterSize(24);
+    textMainMenu.setFillColor(sf::Color::Green);
+
+    textGamemode.setFont(fontConsola);
+    textGamemode.setCharacterSize(24);
+    textGamemode.setFillColor(sf::Color::Green);
+
     textSave.setFont(fontConsola);
     textSave.setString("Save");
     textSave.setCharacterSize(24);
     textSave.setFillColor(sf::Color::Green);
     textSave.setPosition(posText(0, -1));
+    
     textTimer.setFont(fontConsola);
     textTimer.setCharacterSize(24);
     textTimer.setFillColor(sf::Color::Green);
     textTimer.setPosition(posText(4, -1));
+    
     textEnd.setFont(fontConsola);
     textEnd.setCharacterSize(40);
+    
     textName.setFont(fontConsola);
     textName.setCharacterSize(24);
     textName.setFillColor(sf::Color::Green);
     textName.setPosition(posText(1, 0));
     textName.setString("Enter your name");
+    
     textPlayer.setFont(fontConsola);
     textPlayer.setCharacterSize(24);
     textPlayer.setFillColor(sf::Color::Green);
     textPlayer.setPosition(posText(2.2, 0));
+    
+    textCustomSetting.setFont(fontConsola);
+    textCustomSetting.setCharacterSize(24);
+    textCustomSetting.setFillColor(sf::Color::Green);
+
+    textOperator.setFont(fontConsola);
+    textOperator.setCharacterSize(24);
+    textOperator.setFillColor(sf::Color::Green);
+
+    textCustomValue.setFont(fontConsola);
+    textCustomValue.setCharacterSize(24);
+    textCustomValue.setFillColor(sf::Color::Green);
 }
 
-sf::Vector2f text::posText(float x, float y) {
+sf::Vector2f text::posText(const double& x, const double& y) {
     if (y == -1) {
         return sf::Vector2f(36 + x * 204, 540);
     }
     return sf::Vector2f(36 + x * 204, 608 + y * 56);
+}
+
+std::string text::MainMenuString(const int& x) {
+    switch (x) {
+    case 0:
+        return "New game";
+        break;
+    case 1:
+        return "Load game";
+        break;
+    case 2:
+        return "Options";
+        break;
+    case 3:
+        return "Highscores";
+        break;
+    case 4:
+        return "Quit";
+        break;
+    default:
+        break;
+    }
+}
+
+std::string text::GamemodeString(const int& x) {
+    switch (x) {
+    case 1:
+        return "Easy";
+        break;
+    case 2:
+        return "Medium";
+        break;
+    case 3:
+        return "Hard";
+        break;
+    case 4:
+        return "Custom";
+        break;
+    default:
+        break;
+    }
+}
+
+std::string text::CustomSettingString(const int& x) {
+    switch (x) {
+        case 1:
+            return "Width";
+            break;
+        case 2:
+            return "Length";
+            break;
+        case 3:
+            return "Mines";
+            break;
+        default:
+            break;
+    }
+}
+
+std::string text::OperatorString(const bool& x) {
+    switch (x) {
+        case 0:
+            return "-5";
+            break;
+        case 1:
+            return "+5";
+            break;
+        default:
+            break;
+    }
 }
 
 button::button() {
@@ -97,26 +146,43 @@ button::button() {
     GreenRect.setFillColor(sf::Color::Black);
     GreenRect.setOutlineThickness(4.f);
     GreenRect.setOutlineColor(sf::Color::Green);
+
     TriGreenRect.setSize(sf::Vector2f(568, 40));
     TriGreenRect.setFillColor(sf::Color::Black);
     TriGreenRect.setOutlineThickness(4.f);
     TriGreenRect.setOutlineColor(sf::Color::Green);
     TriGreenRect.setPosition(posButton(1, -1));
+    
     DuoGreenRect.setSize(sf::Vector2f(364, 40));
     DuoGreenRect.setFillColor(sf::Color::Black);
     DuoGreenRect.setOutlineThickness(4.f);
     DuoGreenRect.setOutlineColor(sf::Color::Green);
     DuoGreenRect.setPosition(posButton(1, 0));
+    
+    CustomGreenRect.setSize(sf::Vector2f(364, 40));
+    CustomGreenRect.setFillColor(sf::Color::Black);
+    CustomGreenRect.setOutlineThickness(4.f);
+    CustomGreenRect.setOutlineColor(sf::Color::Green);
 }
-sf::Vector2f button::posButton(float x, float y) {
+sf::Vector2f button::posButton(const double& x, const double& y) {
     if (y == -1) {
         return sf::Vector2f(24 + x * 204, 536);
     }
     return sf::Vector2f(24 + x * 204, 604 + y * 56);
 }
 
-bool button::isButtonPressed(int x, int y, sf::Event e, sf::Vector2f p) {
+bool button::isButtonPressed(const int& x, const int& y, sf::Event& e, sf::Vector2f p) {
     int a = p.x - 4, b = a + 168, c = p.y - 4, d = c + 48;
+    if ((x > a) && (x < b) && (y > c) && (y < d)) {
+        if (e.key.code == sf::Mouse::Left) {
+            return true;
+        }
+    }
+    return false;
+}
+
+bool button::isOperatorButtonPressed(const int& x, const int& y, sf::Event& e, sf::Vector2f p) {
+    int a = p.x - 4, b = a + 44, c = p.y - 4, d = c + 40;
     if ((x > a) && (x < b) && (y > c) && (y < d)) {
         if (e.key.code == sf::Mouse::Left) {
             return true;

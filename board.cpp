@@ -11,7 +11,7 @@ board::board() {
     isFirstLeftClick = false;
     isGameRunning = false;
 }
-board::board(int x, int y, int z) {
+board::board(const int& x, const int& y, const int& z) {
     isGameRunning = true;
     width = x;
     length = y;
@@ -34,7 +34,7 @@ board::board(int x, int y, int z) {
         }
     }
 }
-void board::setMine(int mines, int &count) {
+void board::setMine(const int& mines, int &count) {
     for (int a = 0; a < width; ++a) {
         for (int b = 0; b < length; ++b) {
             if ((count < mines) && !isMine(a, b)) {
@@ -61,7 +61,7 @@ void board::resetCellNum() {
         }
     }
 }
-bool board::isMine(int x, int y) {
+bool board::isMine(const int& x, const int& y) {
     if (mem_cell[x][y] == 9) {
         return true;
     }
@@ -69,7 +69,7 @@ bool board::isMine(int x, int y) {
         return false;
     }
 }
-bool board::isZero(int x, int y) {
+bool board::isZero(const int& x, const int& y) {
     if (mem_cell[x][y] == 0) {
         return true;
     }
@@ -77,7 +77,7 @@ bool board::isZero(int x, int y) {
         return false;
     }
 }
-bool board::isRevealed(int x, int y) {
+bool board::isRevealed(const int& x, const int& y) {
     if (cell[x][y] == 10) {
         return false;
     }
@@ -85,7 +85,7 @@ bool board::isRevealed(int x, int y) {
         return true;
     }
 }
-bool board::isPositive(int x, int y) {
+bool board::isPositive(const int& x, const int& y) {
     if ((mem_cell[x][y] >= 1) && (mem_cell[x][y] <= 8)) {
         return true;
     }
@@ -93,7 +93,7 @@ bool board::isPositive(int x, int y) {
         return false;
     }
 }
-void board::countSurroundingMines(int x, int y) {
+void board::countSurroundingMines(const int& x, const int& y) {
     int n = 0;
     if (y < length - 1) {
         if (isMine(x, y + 1)) {
@@ -137,13 +137,13 @@ void board::countSurroundingMines(int x, int y) {
     }
     mem_cell[x][y] = n;
 }
-void board::revealCell(int x, int y) {
+void board::revealCell(const int& x, const int& y) {
     if ((x >= 0) && (y >= 0) && (x <= width - 1) && (y <= length - 1) && !isRevealed(x, y)) {
         cell[x][y] = mem_cell[x][y];
         countRevealedCells++;
     }
 }
-void board::revealSurroundingZero(int x, int y) {
+void board::revealSurroundingZero(const int& x, const int& y) {
     if (y < length - 1) {
         if (isZero(x, y + 1) && !isRevealed(x, y + 1)) {
             revealCell(x, y + 1);
@@ -193,7 +193,7 @@ void board::revealSurroundingZero(int x, int y) {
         }
     }
 }
-void board::revealNearbyPositive(int x, int y) {
+void board::revealNearbyPositive(const int& x, const int& y) {
     if (y < length - 1) {
         if (isPositive(x, y + 1) && !isRevealed(x, y + 1)) {
             revealCell(x, y + 1);
@@ -235,7 +235,7 @@ void board::revealNearbyPositive(int x, int y) {
         }
     }
 }
-void board::revealCellZero(int x, int y) {
+void board::revealCellZero(const int& x, const int& y) {
     revealSurroundingZero(x, y);
     for (int a = 0; a < width; ++a) {
         for (int b = 0; b < length; ++b) {
@@ -245,12 +245,12 @@ void board::revealCellZero(int x, int y) {
         }
     }
 }
-void board::flagCell(int x, int y) {
+void board::flagCell(const int& x, const int& y) {
     if (!isRevealed(x, y)) {
         cell[x][y] = 11;
     }
 }
-bool board::isFlagged(int x, int y) {
+bool board::isFlagged(const int& x, const int& y) {
     if (cell[x][y] == 11) {
         return true;
     }
@@ -258,12 +258,12 @@ bool board::isFlagged(int x, int y) {
         return false;
     }
 }
-void board::unflagCell(int x, int y) {
+void board::unflagCell(const int& x, const int& y) {
     if (isFlagged(x, y)) {
         cell[x][y] = 10;
     }
 }
-void board::swapMine(int x, int y) {
+void board::swapMine(const int& x, const int& y) {
     int mx = rand() % width, my = rand() % length;
     if (isFirstLeftClick) {
         if (isMine(x, y)) {
@@ -288,6 +288,61 @@ void board::DEBUG_revealAll() {
     for (int a = 0; a < width; ++a) {
         for (int b = 0; b < length; ++b) {
             cell[a][b] = mem_cell[a][b];
+        }
+    }
+}
+
+custom_value::custom_value() {
+    customLength = 10;
+    customWidth = 10;
+    customMines = 10;
+}
+
+void custom_value::edit_custom_value(const int& value_type, const bool& isIncrease) {
+    // reset customMines if customMines > customWidth * customLength
+    if (customMines > customWidth * customLength) {
+        customMines = customWidth * customLength;
+    }
+    if (isIncrease == false) {
+        switch (value_type) {
+            case 1:
+                if (customWidth > 3) {
+                    --customWidth;
+                }
+                break;
+            case 2:
+                if (customLength > 3) {
+                    --customLength;
+                }
+                break;
+            case 3:
+                if (customMines > 1) {
+                    --customMines;
+                }
+                break;
+            default:
+                break;
+        }
+    }
+    else {
+        switch (value_type) {
+            case 1:
+                if (customWidth < 32) {
+                    ++customWidth;
+                }
+                break;
+            case 2:
+                if (customLength < 16) {
+                    ++customLength;
+                }
+                break;
+            case 3:
+                if (customMines < customWidth * customLength) {
+                    ++customMines;
+                }
+                break;
+            default:
+                break;
         }
     }
 }

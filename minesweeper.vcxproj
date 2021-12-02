@@ -148,12 +148,14 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="board.cpp" />
+    <ClCompile Include="game.cpp" />
     <ClCompile Include="menu.cpp" />
     <ClCompile Include="main.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="consola.h" />
     <ClInclude Include="board.h" />
+    <ClInclude Include="game.h" />
     <ClInclude Include="menu.h" />
     <ClInclude Include="tiles.h" />
   </ItemGroup>

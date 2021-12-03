@@ -1,5 +1,12 @@
 #include "game.h"
 
+control::control() {
+    isNewPressed = false;
+    isCustomPressed = false;
+    isModePressed = false;
+    openNameDialog = false;
+}
+
 game::game() {
     srand(time(NULL));
     sf::RenderWindow window(sf::VideoMode(1024, 892), "Minesweeper", sf::Style::Titlebar | sf::Style::Close);
@@ -10,10 +17,6 @@ game::game() {
     lastTime = 0;
     currentTime = 0;
     realTime = 0;
-    isNewPressed = false; 
-    isCustomPressed = false; 
-    isModePressed = false;
-    openNameDialog = false;
     while (window.isOpen())
     {
         sf::Vector2i pos = sf::Mouse::getPosition(window);
@@ -64,41 +67,41 @@ game::game() {
                             b.isGameRunning = false;
                             if (!b.isFailure) {
                                 b.isVictory = true;
-                                openNameDialog = true;
+                                ctrl.openNameDialog = true;
                             }
                         }
                     }
                 }
                 if (btn.isButtonPressed(pos.x, pos.y, e, btn.posButton(0, 0))) {
-                    if (!isNewPressed) {
-                        isNewPressed = true;
+                    if (!ctrl.isNewPressed) {
+                        ctrl.isNewPressed = true;
                     }
                     else {
-                        isCustomPressed = false;
-                        isNewPressed = false;
+                        ctrl.isCustomPressed = false;
+                        ctrl.isNewPressed = false;
                     }
                 }
-                if ((isNewPressed) && (btn.isButtonPressed(pos.x, pos.y, e, btn.posButton(1, 0)))) {        //Easy
+                if ((ctrl.isNewPressed) && (btn.isButtonPressed(pos.x, pos.y, e, btn.posButton(1, 0)))) {        //Easy
                     b = board(9, 9, 10);
-                    isModePressed = true;
+                    ctrl.isModePressed = true;
                 }
-                if ((isNewPressed) && (btn.isButtonPressed(pos.x, pos.y, e, btn.posButton(2, 0)))) {        //Medium
+                if ((ctrl.isNewPressed) && (btn.isButtonPressed(pos.x, pos.y, e, btn.posButton(2, 0)))) {        //Medium
                     b = board(16, 16, 40);
-                    isModePressed = true;
+                    ctrl.isModePressed = true;
                 }
-                if ((isNewPressed) && (btn.isButtonPressed(pos.x, pos.y, e, btn.posButton(3, 0)))) {        //Hard
+                if ((ctrl.isNewPressed) && (btn.isButtonPressed(pos.x, pos.y, e, btn.posButton(3, 0)))) {        //Hard
                     b = board(32, 16, 99);
-                    isModePressed = true;
+                    ctrl.isModePressed = true;
                 }
-                if ((isNewPressed) && (btn.isButtonPressed(pos.x, pos.y, e, btn.posButton(4, 0)))) {        //Custom
-                    if (!isCustomPressed) {
-                        isCustomPressed = true;
+                if ((ctrl.isNewPressed) && (btn.isButtonPressed(pos.x, pos.y, e, btn.posButton(4, 0)))) {        //Custom
+                    if (!ctrl.isCustomPressed) {
+                        ctrl.isCustomPressed = true;
                     }
                     else {
-                        isCustomPressed = false;
+                        ctrl.isCustomPressed = false;
                     }
                 }
-                if (isCustomPressed) {
+                if (ctrl.isCustomPressed) {
                     for (int i = 1; i < 4; ++i) {
                         if (btn.isOperatorButtonPressed(pos.x, pos.y, e, btn.posButton(3.5, i))) {
                             cval.edit_custom_value(i, 0);
@@ -115,10 +118,12 @@ game::game() {
                     }
                     if (btn.isPlayCustomButtonPressed(pos.x, pos.y, e, btn.posButton(3, 4))) {
                         b = board(cval.customWidth, cval.customLength, cval.customMines);
-                        isModePressed = true;
+                        ctrl.isModePressed = true;
                     }
                 }
-                
+                if (btn.isButtonPressed(pos.x, pos.y, e, btn.posButton(0, -1))) {                             //Quit
+                    window.close();
+                }
                 if (btn.isButtonPressed(pos.x, pos.y, e, btn.posButton(0, 4))) {                             //Quit
                     window.close();
                 }
@@ -137,11 +142,11 @@ game::game() {
         window.clear();
         //Clock starts
         if (b.isGameRunning) {                                                                              //Game is running
-            if (isModePressed) {
+            if (ctrl.isModePressed) {
                 clock.restart();
-                isNewPressed = false;
-                isCustomPressed = false;
-                isModePressed = false;
+                ctrl.isNewPressed = false;
+                ctrl.isCustomPressed = false;
+                ctrl.isModePressed = false;
             }
             deltaTime = clock.getElapsedTime().asSeconds();
             lastTime = currentTime;
@@ -163,7 +168,7 @@ game::game() {
         txt.textTimer.setString(std::to_string(realTime));
         window.draw(txt.textTimer);
         //Draw gamemode menu
-        if (isNewPressed) {
+        if (ctrl.isNewPressed) {
             for (int i = 1; i < 5; ++i) {
                 btn.GreenRect.setPosition(btn.posButton(i, 0));
                 window.draw(btn.GreenRect);
@@ -171,7 +176,7 @@ game::game() {
             }
         }
         // Draw custom gamemode menu
-        if (isCustomPressed) {
+        if (ctrl.isCustomPressed) {
             for (double i = 1; i < 4; ++i) {
                 btn.CustomGreenRect.setPosition(btn.posButton(3, i));
                 window.draw(btn.CustomGreenRect);
@@ -238,7 +243,7 @@ game::game() {
             window.draw(txt.textEnd);
         }
         // draw name dialog
-        if (openNameDialog) {
+        if (ctrl.openNameDialog) {
             window.draw(btn.DuoGreenRect);
             m.line40px.setPosition(btn.posButton(2.06, 0));
             window.draw(m.line40px);
@@ -248,7 +253,7 @@ game::game() {
                 std::cout << playerInput.toAnsiString() << "\n"; //demo text input
                 playerInput.clear();
                 txt.textPlayer.setString("");
-                openNameDialog = false;
+                ctrl.openNameDialog = false;
             }
         }
         //Draw board game
@@ -260,5 +265,17 @@ game::game() {
             }
         }
         window.display();
+    }
+}
+
+void game::save_game(std::string& time, std::vector<std::vector<int>> mem, std::vector<std::vector<int>> dis) {
+    std::ofstream output("save.txt");
+    if (output.is_open()) {
+        output << "TIME:\n";
+        output << time << "\n";
+        for (int i = 0; i < mem.size(); ++i) {
+
+        }
+        output.close();
     }
 }

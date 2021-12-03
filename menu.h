@@ -11,14 +11,14 @@ struct menu {
 };
 
 struct text {
-    sf::Text textMainMenu, textGamemode, textSave, textTimer, textEnd, textName, textPlayer, textCustomSetting, textOperator, textCustomValue;
+    sf::Text textMainMenu[5], textGamemode[4], textPlayCustom, textSave, textTimer, textEnd, textName, textPlayer, textCustomSetting, textOperator, textCustomValue;
     sf::Font fontConsola;
     text();
     sf::Vector2f posText(const double& x, const double& y);
     std::string MainMenuString(const int& x);
     std::string GamemodeString(const int& x);
     std::string CustomSettingString(const int& x);
-    std::string OperatorString(const bool& x);
+    std::string OperatorString(const int& x);
 };
 
 struct button {
@@ -27,4 +27,5 @@ struct button {
     sf::Vector2f posButton(const double& x, const double& y);
     bool isButtonPressed(const int& x, const int& y, sf::Event& e, sf::Vector2f p);
     bool isOperatorButtonPressed(const int& x, const int& y, sf::Event& e, sf::Vector2f p);
+    bool isPlayCustomButtonPressed(const int& x, const int& y, sf::Event& e, sf::Vector2f p);
 };

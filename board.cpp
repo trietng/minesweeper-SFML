@@ -298,51 +298,94 @@ custom_value::custom_value() {
     customMines = 10;
 }
 
-void custom_value::edit_custom_value(const int& value_type, const bool& isIncrease) {
-    // reset customMines if customMines > customWidth * customLength
+void custom_value::edit_custom_value(const int& value_type, const int& operator_type) {
+    switch (operator_type) {
+    case 0:
+        switch (value_type) {
+        case 1:
+            if (customWidth > 7) {
+                customWidth -= 5;
+            }
+            break;
+        case 2:
+            if (customLength > 7) {
+                customLength -= 5;
+            }
+            break;
+        case 3:
+            if (customMines > 5) {
+                customMines -= 5;
+            }
+            break;
+        default:
+            break;
+        }
+        break;
+    case 1:
+        switch (value_type) {
+        case 1:
+            if (customWidth > 3) {
+                --customWidth;
+            }
+            break;
+        case 2:
+            if (customLength > 3) {
+                --customLength;
+            }
+            break;
+        case 3:
+            if (customMines > 1) {
+                --customMines;
+            }
+            break;
+        default:
+            break;
+        }
+        break;
+    case 2:
+        switch (value_type) {
+        case 1:
+            if (customWidth < 32) {
+                ++customWidth;
+            }
+            break;
+        case 2:
+            if (customLength < 16) {
+                ++customLength;
+            }
+            break;
+        case 3:
+            if (customMines < customWidth * customLength) {
+                ++customMines;
+            }
+            break;
+        default:
+            break;
+        }
+        break;
+    case 3:
+        switch (value_type) {
+        case 1:
+            if (customWidth < 28) {
+                customWidth += 5;
+            }
+            break;
+        case 2:
+            if (customLength < 12) {
+                customLength += 5;
+            }
+            break;
+        case 3:
+            if (customMines < customWidth * customLength - 4) {
+                customMines += 5;
+            }
+            break;
+        default:
+            break;
+        }
+        break;
+    }
     if (customMines > customWidth * customLength) {
         customMines = customWidth * customLength;
-    }
-    if (isIncrease == false) {
-        switch (value_type) {
-            case 1:
-                if (customWidth > 3) {
-                    --customWidth;
-                }
-                break;
-            case 2:
-                if (customLength > 3) {
-                    --customLength;
-                }
-                break;
-            case 3:
-                if (customMines > 1) {
-                    --customMines;
-                }
-                break;
-            default:
-                break;
-        }
-    }
-    else {
-        switch (value_type) {
-            case 1:
-                if (customWidth < 32) {
-                    ++customWidth;
-                }
-                break;
-            case 2:
-                if (customLength < 16) {
-                    ++customLength;
-                }
-                break;
-            case 3:
-                if (customMines < customWidth * customLength) {
-                    ++customMines;
-                }
-                break;
-            default:
-                break;
-        }
     }
 }

@@ -29,5 +29,5 @@ struct board {
 struct custom_value {
 	int customWidth, customLength, customMines;
 	custom_value();
-	void edit_custom_value(const int& value_type, const bool& isIncrease);
+	void edit_custom_value(const int& value_type, const int& operator_type);
 };

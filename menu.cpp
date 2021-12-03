@@ -17,14 +17,28 @@ menu::menu() {                                                            //Oute
 
 text::text() {
     fontConsola.loadFromMemory(consola_ttf_font, consola_ttf_font_length);
-    
-    textMainMenu.setFont(fontConsola);
-    textMainMenu.setCharacterSize(24);
-    textMainMenu.setFillColor(sf::Color::Green);
 
-    textGamemode.setFont(fontConsola);
-    textGamemode.setCharacterSize(24);
-    textGamemode.setFillColor(sf::Color::Green);
+    for (int i = 0; i < 5; ++i) {
+        textMainMenu[i].setFont(fontConsola);
+        textMainMenu[i].setCharacterSize(24);
+        textMainMenu[i].setFillColor(sf::Color::Green);
+        textMainMenu[i].setPosition(posText(0, i));
+        textMainMenu[i].setString(MainMenuString(i));
+    }
+
+    for (int i = 0; i < 4; ++i) {
+        textGamemode[i].setFont(fontConsola);
+        textGamemode[i].setCharacterSize(24);
+        textGamemode[i].setFillColor(sf::Color::Green);
+        textGamemode[i].setPosition(posText(i + 1, 0));
+        textGamemode[i].setString(GamemodeString(i + 1));
+    }
+
+    textPlayCustom.setFont(fontConsola);
+    textPlayCustom.setString("Play custom");
+    textPlayCustom.setCharacterSize(24);
+    textPlayCustom.setFillColor(sf::Color::Green);
+    textPlayCustom.setPosition(posText(3.5, 4));
 
     textSave.setFont(fontConsola);
     textSave.setString("Save");
@@ -128,12 +142,18 @@ std::string text::CustomSettingString(const int& x) {
     }
 }
 
-std::string text::OperatorString(const bool& x) {
+std::string text::OperatorString(const int& x) {
     switch (x) {
         case 0:
             return "-5";
             break;
         case 1:
+            return "-";
+            break;
+        case 2:
+            return "+";
+            break;
+        case 3:
             return "+5";
             break;
         default:
@@ -182,7 +202,17 @@ bool button::isButtonPressed(const int& x, const int& y, sf::Event& e, sf::Vecto
 }
 
 bool button::isOperatorButtonPressed(const int& x, const int& y, sf::Event& e, sf::Vector2f p) {
-    int a = p.x - 4, b = a + 44, c = p.y - 4, d = c + 40;
+    int a = p.x, b = a + 40, c = p.y, d = c + 40;
+    if ((x > a) && (x < b) && (y > c) && (y < d)) {
+        if (e.key.code == sf::Mouse::Left) {
+            return true;
+        }
+    }
+    return false;
+}
+
+bool button::isPlayCustomButtonPressed(const int& x, const int& y, sf::Event& e, sf::Vector2f p) {
+    int a = p.x - 4, b = a + 372, c = p.y - 4, d = c + 48;
     if ((x > a) && (x < b) && (y > c) && (y < d)) {
         if (e.key.code == sf::Mouse::Left) {
             return true;

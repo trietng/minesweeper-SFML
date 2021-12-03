@@ -100,12 +100,22 @@ game::game() {
                 }
                 if (isCustomPressed) {
                     for (int i = 1; i < 4; ++i) {
-                        if (btn.isOperatorButtonPressed(pos.x, pos.y, e, btn.posButton(4, i))) {
-                            cval.edit_custom_value(i, false);
+                        if (btn.isOperatorButtonPressed(pos.x, pos.y, e, btn.posButton(3.5, i))) {
+                            cval.edit_custom_value(i, 0);
                         }
-                        if (btn.isOperatorButtonPressed(pos.x, pos.y, e, btn.posButton(4.6, i))) {
-                            cval.edit_custom_value(i, true);
+                        if (btn.isOperatorButtonPressed(pos.x, pos.y, e, btn.posButton(3.7, i))) {
+                            cval.edit_custom_value(i, 1);
                         }
+                        if (btn.isOperatorButtonPressed(pos.x, pos.y, e, btn.posButton(4.392, i))) {
+                            cval.edit_custom_value(i, 2);
+                        }
+                        if (btn.isOperatorButtonPressed(pos.x, pos.y, e, btn.posButton(4.59, i))) {
+                            cval.edit_custom_value(i, 3);
+                        }
+                    }
+                    if (btn.isPlayCustomButtonPressed(pos.x, pos.y, e, btn.posButton(3, 4))) {
+                        b = board(cval.customWidth, cval.customLength, cval.customMines);
+                        isModePressed = true;
                     }
                 }
                 
@@ -130,6 +140,7 @@ game::game() {
             if (isModePressed) {
                 clock.restart();
                 isNewPressed = false;
+                isCustomPressed = false;
                 isModePressed = false;
             }
             deltaTime = clock.getElapsedTime().asSeconds();
@@ -153,12 +164,10 @@ game::game() {
         window.draw(txt.textTimer);
         //Draw gamemode menu
         if (isNewPressed) {
-            for (double i = 1; i < 5; ++i) {
+            for (int i = 1; i < 5; ++i) {
                 btn.GreenRect.setPosition(btn.posButton(i, 0));
                 window.draw(btn.GreenRect);
-                txt.textGamemode.setPosition(txt.posText(i, 0));
-                txt.textGamemode.setString(txt.GamemodeString(i));
-                window.draw(txt.textGamemode);
+                window.draw(txt.textGamemode[i - 1]);
             }
         }
         // Draw custom gamemode menu
@@ -170,37 +179,48 @@ game::game() {
                 window.draw(m.line40px);
                 m.line40px.setPosition(btn.posButton(3.696, i));
                 window.draw(m.line40px);
-                m.line40px.setPosition(btn.posButton(4.196, i));
+                m.line40px.setPosition(btn.posButton(3.892, i));
                 window.draw(m.line40px);
-                m.line40px.setPosition(btn.posButton(4.5686, i));
+                m.line40px.setPosition(btn.posButton(4.392, i));
+                window.draw(m.line40px);
+                m.line40px.setPosition(btn.posButton(4.59, i));
                 window.draw(m.line40px);
                 txt.textCustomSetting.setString(txt.CustomSettingString(i));
                 txt.textCustomSetting.setPosition(txt.posText(3, i));
                 window.draw(txt.textCustomSetting);
                 txt.textOperator.setString(txt.OperatorString(0));
-                txt.textOperator.setPosition(txt.posText(4, i));
+                txt.textOperator.setPosition(txt.posText(3.48, i));
                 window.draw(txt.textOperator);
                 txt.textOperator.setString(txt.OperatorString(1));
-                txt.textOperator.setPosition(txt.posText(4.6, i));
+                txt.textOperator.setPosition(txt.posText(3.7, i));
+                window.draw(txt.textOperator);
+                txt.textOperator.setString(txt.OperatorString(2));
+                txt.textOperator.setPosition(txt.posText(4.4, i));
+                window.draw(txt.textOperator);
+                txt.textOperator.setString(txt.OperatorString(3));
+                txt.textOperator.setPosition(txt.posText(4.5686, i));
                 window.draw(txt.textOperator);
             }
-            txt.textCustomValue.setPosition(txt.posText(4.2, 1));
+            //display custom values
+            txt.textCustomValue.setPosition(txt.posText(4.02, 1));
             txt.textCustomValue.setString(std::to_string(cval.customWidth));
             window.draw(txt.textCustomValue);
-            txt.textCustomValue.setPosition(txt.posText(4.2, 2));
+            txt.textCustomValue.setPosition(txt.posText(4.02, 2));
             txt.textCustomValue.setString(std::to_string(cval.customLength));
             window.draw(txt.textCustomValue);
-            txt.textCustomValue.setPosition(txt.posText(4.2, 3));
+            txt.textCustomValue.setPosition(txt.posText(4.02, 3));
             txt.textCustomValue.setString(std::to_string(cval.customMines));
             window.draw(txt.textCustomValue);
+            //display "Play"
+            btn.CustomGreenRect.setPosition(btn.posButton(3, 4));
+            window.draw(btn.CustomGreenRect);
+            window.draw(txt.textPlayCustom);
         }
         //Draw main menu buttons
-        for (double i = 0; i < 5; ++i) {                                    
+        for (int i = 0; i < 5; ++i) {                                    
             btn.GreenRect.setPosition(btn.posButton(0, i));
             window.draw(btn.GreenRect);
-            txt.textMainMenu.setPosition(txt.posText(0, i));
-            txt.textMainMenu.setString(txt.MainMenuString(i));
-            window.draw(txt.textMainMenu);
+            window.draw(txt.textMainMenu[i]);
         }
         // Draw status button
         window.draw(btn.TriGreenRect);                                     

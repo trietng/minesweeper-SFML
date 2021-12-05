@@ -122,7 +122,11 @@ game::game() {
                     }
                 }
                 if (btn.isButtonPressed(pos.x, pos.y, e, btn.posButton(0, -1))) {                             //Quit
-                    window.close();
+                    b.save_game(realTime);
+                }
+                if (btn.isButtonPressed(pos.x, pos.y, e, btn.posButton(0, 1))) {
+                    clock.restart();
+                    b.load_game(realTime);
                 }
                 if (btn.isButtonPressed(pos.x, pos.y, e, btn.posButton(0, 4))) {                             //Quit
                     window.close();
@@ -152,7 +156,7 @@ game::game() {
             lastTime = currentTime;
             currentTime = deltaTime;
             if (currentTime > lastTime) {
-                realTime = deltaTime;
+                realTime++;
             }
         }
         //Draw menu outline
@@ -265,17 +269,5 @@ game::game() {
             }
         }
         window.display();
-    }
-}
-
-void game::save_game(std::string& time, std::vector<std::vector<int>> mem, std::vector<std::vector<int>> dis) {
-    std::ofstream output("save.txt");
-    if (output.is_open()) {
-        output << "TIME:\n";
-        output << time << "\n";
-        for (int i = 0; i < mem.size(); ++i) {
-
-        }
-        output.close();
     }
 }

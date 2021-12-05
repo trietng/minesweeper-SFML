@@ -1,5 +1,9 @@
 #pragma once
+#include <iostream>
+#include <fstream>
 #include <vector>
+#include <string>
+#include <SFML/Graphics.hpp>
 
 struct board {
 	std::vector<std::vector<int>> mem_cell, cell;
@@ -24,6 +28,12 @@ struct board {
 	void swapMine(const int& x, const int& y);
 	bool endGame();
 	void DEBUG_revealAll();
+	int to_int(const std::string& str);
+	std::vector<int> to_vector_int(const std::string& str);
+	void edit_board(const int& value_type, const int& value, int& time);
+	void edit_board(const int& value_type, const std::string& value);
+	void save_game(const int& time);
+	void load_game(int& time);
 };
 
 struct custom_value {

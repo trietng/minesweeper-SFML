@@ -292,6 +292,142 @@ void board::DEBUG_revealAll() {
     }
 }
 
+int board::to_int(const std::string& str) {
+    int result = 0;
+    for (int i = 0; i < str.size(); ++i) {
+        if (isdigit(str[i])) {
+            result = result * 10 + (str[i] - '0');
+        }
+    }
+    return result;
+}
+
+std::vector<int> board::to_vector_int(const std::string & str) {
+    std::vector<int> converted_value;
+    int last = 0, current = 0;
+    for (int i = 1; i < str.size(); ++i) {
+        if (str[i] == ' ') {
+            last = current;
+            current = i;
+            converted_value.push_back(to_int(str.substr(last + 1, current - last)));
+        }
+    }
+    return converted_value;
+}
+
+void board::edit_board(const int& value_type, const int& value, int& time) {
+    switch (value_type) {
+    case 0:
+        time = value;
+        break;
+    case 1:
+        width = value;
+        break;
+    case 2:
+        length = value;
+        break;
+    case 3:
+        mines = value;
+        break;
+    case 4:
+        countRevealedCells = value;
+        break;
+    case 5:
+        isFirstLeftClick = value;
+        break;
+    case 6:
+        isVictory = value;
+        break;
+    case 7:
+        isFailure = value;
+        break;
+    case 8:
+        isGameRunning = value;
+        break;
+    default:
+        break;
+    }
+}
+
+void board::edit_board(const int& value_type, const std::string& value) {
+    std::vector<int> converted_value = to_vector_int(value);
+    int k = 0;
+    switch (value_type) {
+    case 9:
+        mem_cell.resize(width, std::vector<int>(length));
+        for (int i = 0; i < width; i++) {
+            for (int j = 0; j < length; j++) {
+                mem_cell[i][j] = converted_value[k];
+                k++;
+            }
+        }
+        break;
+    case 10:
+        cell.resize(width, std::vector<int>(length));
+        for (int i = 0; i < width; i++) {
+            for (int j = 0; j < length; j++) {
+                cell[i][j] = converted_value[k];
+                k++;
+            }
+        }
+        break;
+    default:
+        break;
+    }
+}
+
+void board::save_game(const int& time) {
+    std::ofstream output("save.txt");
+    if (output.is_open()) {
+        output << "TIME " << time << "\n";
+        output << "WIDTH " << width << "\n";
+        output << "LENGTH " << length << "\n";
+        output << "MINES " << mines << "\n";
+        output << "COUNTREVEALEDCELLS " << countRevealedCells << "\n";
+        output << "ISFIRSTLEFTCLICK " << isFirstLeftClick << " \n";
+        output << "ISVICTORY " << isVictory << "\n";
+        output << "ISFAILURE " << isFailure << "\n";
+        output << "ISGAMERUNNING " << isGameRunning << "\n";
+        output << "MEM_CELL  ";
+        for (int i = 0; i < mem_cell.size(); ++i) {
+            for (int j = 0; j < mem_cell[i].size(); ++j) {
+                output << mem_cell[i][j] << " ";
+            }
+        }
+        output << "\nCELL  ";
+        for (int i = 0; i < cell.size(); ++i) {
+            for (int j = 0; j < cell[i].size(); ++j) {
+                output << cell[i][j] << " ";
+            }
+        }
+        output.close();
+    }
+}
+
+void board::load_game(int& time) {
+    std::ifstream input("save.txt");
+    std::string load_value;
+    int itr_line = 0;
+    if (input.is_open())
+    {
+        while (!input.eof()) {
+            while (itr_line < 9) {
+                input.ignore(20, ' ');
+                std::getline(input, load_value);
+                edit_board(itr_line, to_int(load_value), time);
+                itr_line++;
+            }
+            while (itr_line < 11) {
+                input.ignore(20, ' ');
+                std::getline(input, load_value);
+                edit_board(itr_line, load_value);
+                itr_line++;
+            }
+        }
+        input.close();
+    }
+}
+
 custom_value::custom_value() {
     customLength = 10;
     customWidth = 10;

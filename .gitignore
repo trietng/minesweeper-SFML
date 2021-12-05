@@ -1,3 +1,4 @@
-# ignore unimportant folders
+# ignore unimportant files and folders
 x64/
 .vs/
+save.txt

@@ -26,4 +26,3 @@ struct game {
 	int deltaTime, lastTime, currentTime, realTime;
 	game();
 };
-

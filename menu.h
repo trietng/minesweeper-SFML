@@ -29,3 +29,9 @@ struct button {
     bool isOperatorButtonPressed(const int& x, const int& y, sf::Event& e, sf::Vector2f p);
     bool isPlayCustomButtonPressed(const int& x, const int& y, sf::Event& e, sf::Vector2f p);
 };
+
+struct custom_value {
+    int customWidth, customLength, customMines;
+    custom_value();
+    void edit_custom_value(const int& value_type, const int& operator_type);
+};

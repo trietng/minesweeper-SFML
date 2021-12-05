@@ -35,9 +35,3 @@ struct board {
 	void save_game(const int& time);
 	void load_game(int& time);
 };
-
-struct custom_value {
-	int customWidth, customLength, customMines;
-	custom_value();
-	void edit_custom_value(const int& value_type, const int& operator_type);
-};

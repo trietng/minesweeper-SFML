@@ -8,7 +8,7 @@
 const int cell_length = 32;
 
 struct control {
-	bool isNewPressed, isCustomPressed, isModePressed, openNameDialog;
+	bool isNewPressed, isCustomPressed, isModePressed, openNameDialog, isHighscoresPressed;
 	control();
 };
 

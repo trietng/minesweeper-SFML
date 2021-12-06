@@ -5,6 +5,7 @@ control::control() {
     isCustomPressed = false;
     isModePressed = false;
     openNameDialog = false;
+    isHighscoresPressed = false;
 }
 
 game::game() {
@@ -127,6 +128,10 @@ game::game() {
                 if (btn.isButtonPressed(pos.x, pos.y, e, btn.posButton(0, 1))) {
                     clock.restart();
                     b.load_game(realTime);
+                    b.size = b.width * b.length;
+                }
+                if (btn.isButtonPressed(pos.x, pos.y, e, btn.posButton(0, 3))) {                             //Quit
+                    
                 }
                 if (btn.isButtonPressed(pos.x, pos.y, e, btn.posButton(0, 4))) {                             //Quit
                     window.close();
@@ -148,6 +153,7 @@ game::game() {
         if (b.isGameRunning) {                                                                              //Game is running
             if (ctrl.isModePressed) {
                 clock.restart();
+                realTime = 0;
                 ctrl.isNewPressed = false;
                 ctrl.isCustomPressed = false;
                 ctrl.isModePressed = false;
@@ -259,6 +265,11 @@ game::game() {
                 txt.textPlayer.setString("");
                 ctrl.openNameDialog = false;
             }
+        }
+        //
+        for (int i = -3; i >= -10; i--) {
+            txt.textMainMenu[0].setPosition(txt.posText(0, i));
+            window.draw(txt.textMainMenu[0]);
         }
         //Draw board game
         for (double i = 0; i < b.width; ++i) {                                                                         //Draw cells

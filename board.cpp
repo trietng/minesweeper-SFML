@@ -321,28 +321,28 @@ void board::edit_board(const int& value_type, const int& value, int& time) {
         time = value;
         break;
     case 1:
-        width = value;
+        isGameRunning = value;
         break;
     case 2:
-        length = value;
+        width = value;
         break;
     case 3:
-        mines = value;
+        length = value;
         break;
     case 4:
-        countRevealedCells = value;
+        mines = value;
         break;
     case 5:
-        isFirstLeftClick = value;
+        countRevealedCells = value;
         break;
     case 6:
-        isVictory = value;
+        isFirstLeftClick = value;
         break;
     case 7:
-        isFailure = value;
+        isVictory = value;
         break;
     case 8:
-        isGameRunning = value;
+        isFailure = value;
         break;
     default:
         break;
@@ -380,14 +380,14 @@ void board::save_game(const int& time) {
     std::ofstream output("save.txt");
     if (output.is_open()) {
         output << "TIME " << time << "\n";
+        output << "ISGAMERUNNING " << isGameRunning << "\n";
         output << "WIDTH " << width << "\n";
         output << "LENGTH " << length << "\n";
         output << "MINES " << mines << "\n";
         output << "COUNTREVEALEDCELLS " << countRevealedCells << "\n";
-        output << "ISFIRSTLEFTCLICK " << isFirstLeftClick << " \n";
+        output << "ISFIRSTLEFTCLICK " << isFirstLeftClick << "\n";
         output << "ISVICTORY " << isVictory << "\n";
         output << "ISFAILURE " << isFailure << "\n";
-        output << "ISGAMERUNNING " << isGameRunning << "\n";
         output << "MEM_CELL  ";
         for (int i = 0; i < mem_cell.size(); ++i) {
             for (int j = 0; j < mem_cell[i].size(); ++j) {
@@ -406,11 +406,11 @@ void board::save_game(const int& time) {
 
 void board::load_game(int& time) {
     std::ifstream input("save.txt");
-    std::string load_value;
-    int itr_line = 0;
+    std::string load_value;  
+    int itr_line = 0; // itr = iterator
     if (input.is_open())
     {
-        while (!input.eof()) {
+        while (!input.eof()) { //eof = end of file
             while (itr_line < 9) {
                 input.ignore(20, ' ');
                 std::getline(input, load_value);

@@ -35,3 +35,10 @@ struct custom_value {
     custom_value();
     void edit_custom_value(const int& value_type, const int& operator_type);
 };
+
+struct score_data {
+    int rank, score, mode_type;
+    std::string name;
+    void edit_score(const int& mode_type);
+    void save_score(const int& mode_type, const int& point, const int& playerName);
+};

@@ -6,6 +6,7 @@ control::control() {
     isModePressed = false;
     openNameDialog = false;
     isHighscoresPressed = false;
+    gamemode = -1;
 }
 
 game::game() {
@@ -85,14 +86,17 @@ game::game() {
                 if ((ctrl.isNewPressed) && (btn.isButtonPressed(pos.x, pos.y, e, btn.posButton(1, 0)))) {        //Easy
                     b = board(9, 9, 10);
                     ctrl.isModePressed = true;
+                    ctrl.gamemode = 0;
                 }
                 if ((ctrl.isNewPressed) && (btn.isButtonPressed(pos.x, pos.y, e, btn.posButton(2, 0)))) {        //Medium
                     b = board(16, 16, 40);
                     ctrl.isModePressed = true;
+                    ctrl.gamemode = 1;
                 }
                 if ((ctrl.isNewPressed) && (btn.isButtonPressed(pos.x, pos.y, e, btn.posButton(3, 0)))) {        //Hard
                     b = board(32, 16, 99);
                     ctrl.isModePressed = true;
+                    ctrl.gamemode = 2;
                 }
                 if ((ctrl.isNewPressed) && (btn.isButtonPressed(pos.x, pos.y, e, btn.posButton(4, 0)))) {        //Custom
                     if (!ctrl.isCustomPressed) {
@@ -120,6 +124,7 @@ game::game() {
                     if (btn.isPlayCustomButtonPressed(pos.x, pos.y, e, btn.posButton(3, 4))) {
                         b = board(cval.customWidth, cval.customLength, cval.customMines);
                         ctrl.isModePressed = true;
+                        ctrl.isCustomPressed = true;
                     }
                 }
                 if (btn.isButtonPressed(pos.x, pos.y, e, btn.posButton(0, -1))) {                             //Quit
@@ -131,13 +136,22 @@ game::game() {
                     b.size = b.width * b.length;
                 }
                 if (btn.isButtonPressed(pos.x, pos.y, e, btn.posButton(0, 3))) {                             //Quit
-                    
+                    hscr.load_score();
+                    txt.textHighscores[0][0].setString("Easy");
+                    for (int i = 0; i < hscr.easy.size(); ++i) {
+                        txt.textHighscores[0][i + 1].setString(std::to_string(i + 1) + ". " + hscr.easy[i].playerName + " " + std::to_string(hscr.easy[i].point));
+                    }
+                    for (int i = 0; i < hscr.medium.size(); ++i) {
+                        
+                    }
+                    ctrl.isHighscoresPressed = true;
+                    b = board();
                 }
                 if (btn.isButtonPressed(pos.x, pos.y, e, btn.posButton(0, 4))) {                             //Quit
                     window.close();
                 }
             }
-            if (b.isVictory) {
+            if (b.isVictory && !ctrl.isCustomPressed) {
                 if (e.type == sf::Event::TextEntered) {
                     if (playerInput.getSize() < 6) {
                         if (e.text.unicode > 32 && e.text.unicode < 127) {
@@ -261,15 +275,21 @@ game::game() {
             window.draw(txt.textPlayer);
             if (playerInput.getSize() == 6) {
                 std::cout << playerInput.toAnsiString() << "\n"; //demo text input
+                hscr.save_score(ctrl.gamemode, 1000, playerInput.toAnsiString());
                 playerInput.clear();
                 txt.textPlayer.setString("");
                 ctrl.openNameDialog = false;
             }
         }
-        //
-        for (int i = -3; i >= -10; i--) {
-            txt.textMainMenu[0].setPosition(txt.posText(0, i));
-            window.draw(txt.textMainMenu[0]);
+        // draw highscores display
+        if (ctrl.isHighscoresPressed) {
+            window.draw(txt.textHighscores[0][0]);
+            for (int i = 0; i < hscr.easy.size(); ++i) {
+                window.draw(txt.textHighscores[0][i + 1]);
+            }
+            for (int i = 0; i < hscr.medium.size(); ++i) {
+                window.draw(txt.textHighscores[1][i + 1]);
+            }
         }
         //Draw board game
         for (double i = 0; i < b.width; ++i) {                                                                         //Draw cells

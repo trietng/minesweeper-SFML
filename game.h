@@ -9,6 +9,7 @@ const int cell_length = 32;
 
 struct control {
 	bool isNewPressed, isCustomPressed, isModePressed, openNameDialog, isHighscoresPressed;
+	int gamemode;
 	control();
 };
 
@@ -23,6 +24,7 @@ struct game {
 	button btn;
 	custom_value cval;
 	control ctrl;
+	highscores hscr;
 	int deltaTime, lastTime, currentTime, realTime;
 	game();
 };

@@ -1,9 +1,19 @@
 #pragma once
 #include <SFML\Graphics.hpp>
 #include <string>
+#include <fstream>
+#include <iostream>
+#include <algorithm>
 #include "consola.h"
 const sf::Vector2f button_size = sf::Vector2f(160, 40);
 
+struct highscore {
+    int point, mode_type;
+    std::string playerName;
+    highscore();
+};
+
+static bool comp_score(const highscore& hs1, const highscore& hs2);
 
 struct menu {
     sf::RectangleShape outer, separator, line40px;
@@ -11,7 +21,8 @@ struct menu {
 };
 
 struct text {
-    sf::Text textMainMenu[5], textGamemode[4], textPlayCustom, textSave, textTimer, textEnd, textName, textPlayer, textCustomSetting, textOperator, textCustomValue;
+    sf::Text textPlayCustom, textSave, textTimer, textEnd, textName, textPlayer, textCustomSetting, textOperator, textCustomValue;
+    sf::Text textMainMenu[5], textGamemode[4], textHighscores[3][10];
     sf::Font fontConsola;
     text();
     sf::Vector2f posText(const double& x, const double& y);
@@ -36,9 +47,15 @@ struct custom_value {
     void edit_custom_value(const int& value_type, const int& operator_type);
 };
 
-struct score_data {
-    int rank, score, mode_type;
-    std::string name;
-    void edit_score(const int& mode_type);
-    void save_score(const int& mode_type, const int& point, const int& playerName);
+struct highscores {
+    std::vector<highscore> easy, medium, hard;
+    std::vector<std::string> print_value;
+    int to_int(const std::string& str);
+    int to_int(const char& ch);
+    int calc_point(const int& mode_type, const int& time);
+    void proc_score(const std::string& value);
+    void save_score(const int& mode_type, const int& point, const std::string& playerName);
+    void load_score();
+    void vector_hs_sort();
+    void set_print_value(const std::vector<highscore> hs);
 };

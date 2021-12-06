@@ -1,5 +1,14 @@
 ﻿#include "menu.h"
 
+highscore::highscore() {
+    point = 0;
+    mode_type = -1;
+}
+
+bool comp_score(const highscore& hs1, const highscore& hs2) {
+    return (hs1.point > hs2.point) ? true : false;
+}
+
 menu::menu() {                                                            //Outer line of menu
     outer.setSize(sf::Vector2f(1000, 356));
     outer.setPosition(sf::Vector2f(12, 524));
@@ -33,6 +42,15 @@ text::text() {
         textGamemode[i].setPosition(posText(i + 1, 0));
         textGamemode[i].setString(GamemodeString(i + 1));
     }
+    for (int j = 0; j < 3; ++j) {
+        for (int i = 0; i < 9; ++i) {
+            textHighscores[j][i].setFont(fontConsola);
+            textHighscores[j][i].setCharacterSize(24);
+            textHighscores[j][i].setFillColor(sf::Color::Green);
+            textHighscores[j][i].setPosition(posText(j, i - 10));
+        }
+    }
+    
 
     textPlayCustom.setFont(fontConsola);
     textPlayCustom.setString("Play custom");
@@ -316,5 +334,86 @@ void custom_value::edit_custom_value(const int& value_type, const int& operator_
     }
     if (customMines > customWidth * customLength) {
         customMines = customWidth * customLength - 2;
+    }
+}
+
+int highscores::to_int(const std::string& str) {
+    int result = 0;
+    for (int i = 0; i < str.size(); ++i) {
+        if (isdigit(str[i])) {
+            result = result * 10 + (str[i] - '0');
+        }
+    }
+    return result;
+}
+
+int highscores::to_int(const char& ch) {
+    return (isdigit(ch)) ? (ch - '0') : -1;
+}
+
+int highscores::calc_point(const int& mode_type, const int& time) {
+    return 0;
+}
+
+void highscores::proc_score(const std::string& value) {
+    highscore assigned_value;
+    assigned_value.mode_type = to_int(value[0]);
+    assigned_value.playerName = value.substr(2, 6);
+    assigned_value.point = to_int(value.substr(9, 4));
+    switch (assigned_value.mode_type) {
+    case 0:
+        easy.push_back(assigned_value);
+        break;
+    case 1:
+        medium.push_back(assigned_value);
+        break;
+    case 2:
+        hard.push_back(assigned_value);
+        break;
+    default:
+        break;
+    }
+}
+
+void highscores::save_score(const int& mode_type, const int& point, const std::string& playerName) {
+    std::ofstream output("highscores.txt", std::ios_base::app);
+    if (output.is_open()) {
+        output << mode_type << ' ' << playerName << ' ' << point << "\n";
+        output.close();
+    }
+}
+
+void highscores::load_score() {
+    std::ifstream input("highscores.txt");
+    std::string load_value;
+    easy.clear();
+    medium.clear();
+    hard.clear();
+    if (input.is_open()) {
+        while (!input.eof()) {
+            std::getline(input, load_value);
+            proc_score(load_value);
+        }
+        input.close();
+    }
+    vector_hs_sort();
+}
+
+void highscores::vector_hs_sort() {
+    if (easy.size() != 0) {
+        std::sort(easy.begin(), easy.end(), comp_score);
+    }
+    if (medium.size() != 0) {
+        std::sort(medium.begin(), medium.end(), comp_score);
+    }
+    if (hard.size() != 0) {
+        std::sort(hard.begin(), easy.end(), comp_score);
+    }
+}
+
+void highscores::set_print_value(const std::vector<highscore> hs) {
+    print_value.clear();
+    for (int i = 0; i < hs.size(); i++) {
+        print_value.push_back(hs[i].playerName + " " + std::to_string(hs[i].point));
     }
 }

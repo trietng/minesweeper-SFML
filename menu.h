@@ -50,7 +50,6 @@ struct custom_value {
 
 struct highscores {
     std::vector<highscore> easy, medium, hard;
-    std::vector<std::string> print_value;
     int to_int(const std::string& str);
     int to_int(const char& ch);
     int calc_point(const int& mode_type, const int& time);

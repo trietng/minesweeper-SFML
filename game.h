@@ -9,7 +9,7 @@
 const int cell_length = 32;
 
 struct control {
-	bool isNewPressed, isCustomPressed, isModePressed, openNameDialog, isHighscoresPressed, isOptionsPressed, colorState;
+	bool isNewPressed, isCustomPressed, isModePressed, openNameDialog, isHighscoresPressed, isOptionsPressed, colorState, isDeleteHSData;
 	int gamemode;
 	control();
 };

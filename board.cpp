@@ -292,6 +292,17 @@ void board::DEBUG_revealAll() {
     }
 }
 
+void board::DEBUG_winGame() {
+    isFirstLeftClick = false;
+    for (int a = 0; a < width; ++a) {
+        for (int b = 0; b < length; ++b) {
+            if (!isMine(a, b) && !isRevealed(a, b)) {
+                revealCell(a, b);
+            }
+        }
+    }
+}
+
 int board::to_int(const std::string& str) {
     int result = 0;
     for (int i = 0; i < str.size(); ++i) {

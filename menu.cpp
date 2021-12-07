@@ -53,6 +53,14 @@ text::text() {
         }
     }
     
+    for (int i = 0; i < 2; ++i) {
+        textOptions[i].setFont(fontConsola);
+        textOptions[i].setCharacterSize(24);
+        textOptions[i].setFillColor(sf::Color::Green);
+        textOptions[i].setPosition(posText(i + 1, 2));
+    }
+    textOptions[0].setString(OptionsString(0));
+    textOptions[1].setString(OptionsString(2));
 
     textPlayCustom.setFont(fontConsola);
     textPlayCustom.setString("Play custom");
@@ -181,6 +189,23 @@ std::string text::OperatorString(const int& x) {
     }
 }
 
+std::string text::OptionsString(const int& x) {
+    switch (x) {
+    case 0:
+        return "Color: OFF";
+        break;
+    case 1:
+        return "Color: ON";
+        break;
+    case 2:
+        return "Delete all highscores data";
+        break;
+    default:
+        break;
+    }
+    return "";
+}
+
 button::button() {
     GreenRect.setSize(button_size);
     GreenRect.setFillColor(sf::Color::Black);
@@ -197,7 +222,7 @@ button::button() {
     DuoGreenRect.setFillColor(sf::Color::Black);
     DuoGreenRect.setOutlineThickness(4.f);
     DuoGreenRect.setOutlineColor(sf::Color::Green);
-    DuoGreenRect.setPosition(posButton(1, 0));
+    
     
     CustomGreenRect.setSize(sf::Vector2f(364, 40));
     CustomGreenRect.setFillColor(sf::Color::Black);
@@ -427,12 +452,5 @@ void highscores::vector_hs_sort() {
     }
     if (hard.size() != 0) {
         std::sort(hard.begin(), hard.end(), comp_score);
-    }
-}
-
-void highscores::set_print_value(const std::vector<highscore> hs) {
-    print_value.clear();
-    for (int i = 0; i < hs.size(); i++) {
-        print_value.push_back(hs[i].playerName + " " + std::to_string(hs[i].point));
     }
 }

@@ -6,6 +6,8 @@ control::control() {
     isModePressed = false;
     openNameDialog = false;
     isHighscoresPressed = false;
+    isOptionsPressed = false;
+    colorState = false; //true if color, false if default
     gamemode = -1;
 }
 
@@ -13,8 +15,9 @@ game::game() {
     srand(time(NULL));
     sf::RenderWindow window(sf::VideoMode(1024, 892), "Minesweeper", sf::Style::Titlebar | sf::Style::Close);
     window.setFramerateLimit(60);
-    b_texture.loadFromMemory(tiles_png, tiles_png_len);
-    b_sprite.setTexture(b_texture);
+    b_texture_default.loadFromMemory(tiles_png, tiles_png_len);
+    b_texture_color.loadFromMemory(tiles_color_jpg, tiles_color_jpg_len);
+    b_sprite.setTexture(b_texture_default);
     deltaTime = 0;
     lastTime = 0;
     currentTime = 0;
@@ -30,10 +33,13 @@ game::game() {
                 window.close();
             }
             if (e.type == sf::Event::KeyPressed) {
-                if (e.key.code == sf::Keyboard::R) {
+                if (e.key.code == sf::Keyboard::Num1) {
                     b.DEBUG_revealAll();
                 }
-                if (e.key.code == sf::Keyboard::D) {
+                if (e.key.code == sf::Keyboard::Num2) {
+                    b.DEBUG_winGame();
+                }
+                if (e.key.code == sf::Keyboard::Num3) {
                     b = board(5, 5, 1);
                 }
             }
@@ -64,13 +70,6 @@ game::game() {
                             }
 
                         }
-                        if (b.mines == b.size - b.countRevealedCells) {                                     //Victory
-                            b.isGameRunning = false;
-                            if (!b.isFailure) {
-                                b.isVictory = true;
-                                ctrl.openNameDialog = true;
-                            }
-                        }
                     }
                 }
                 if (btn.isButtonPressed(pos.x, pos.y, e, btn.posButton(0, 0))) {
@@ -84,16 +83,19 @@ game::game() {
                 }
                 if ((ctrl.isNewPressed) && (btn.isButtonPressed(pos.x, pos.y, e, btn.posButton(1, 0)))) {        //Easy
                     b = board(9, 9, 10);
+                    ctrl = control();
                     ctrl.isModePressed = true;
                     ctrl.gamemode = 0;
                 }
                 if ((ctrl.isNewPressed) && (btn.isButtonPressed(pos.x, pos.y, e, btn.posButton(2, 0)))) {        //Medium
                     b = board(16, 16, 40);
+                    ctrl = control();
                     ctrl.isModePressed = true;
                     ctrl.gamemode = 1;
                 }
                 if ((ctrl.isNewPressed) && (btn.isButtonPressed(pos.x, pos.y, e, btn.posButton(3, 0)))) {        //Hard
                     b = board(32, 16, 99);
+                    ctrl = control();
                     ctrl.isModePressed = true;
                     ctrl.gamemode = 2;
                 }
@@ -130,31 +132,56 @@ game::game() {
                     b.save_game(realTime);
                 }
                 if (btn.isButtonPressed(pos.x, pos.y, e, btn.posButton(0, 1))) {
+                    ctrl = control();
                     clock.restart();
                     b.load_game(realTime);
                     b.size = b.width * b.length;
                 }
+                if (btn.isButtonPressed(pos.x, pos.y, e, btn.posButton(0, 2))) {
+                    ctrl.isNewPressed = false;
+                    ctrl.isCustomPressed = false;
+                    if (!ctrl.isOptionsPressed) {
+                        ctrl.isOptionsPressed = true;
+                    }
+                    else {
+                        ctrl.isOptionsPressed = false;
+                    }
+                }
+                if (ctrl.isOptionsPressed && btn.isButtonPressed(pos.x, pos.y, e, btn.posButton(1, 2))) {
+                    if (!ctrl.colorState) {
+                        ctrl.colorState = true;
+                        txt.textOptions[0].setString(txt.OptionsString(1));
+                        b_sprite.setTexture(b_texture_color);
+                    }
+                    else {
+                        ctrl.colorState = false;
+                        txt.textOptions[0].setString(txt.OptionsString(0));
+                        b_sprite.setTexture(b_texture_default);
+                    }
+                }
                 if (btn.isButtonPressed(pos.x, pos.y, e, btn.posButton(0, 3))) {
                     if (!ctrl.isHighscoresPressed) {
+                        ctrl = control();
                         ctrl.isHighscoresPressed = true;
+                        realTime = 0;
+                        hscr.load_score();
+                        txt.textHighscores[0][0].setString("Easy");
+                        for (int i = 0; i < std::min((int)hscr.easy.size(), 7); ++i) {
+                            txt.textHighscores[0][i + 1].setString(std::to_string(i + 1) + ". " + hscr.easy[i].playerName + " " + std::to_string(hscr.easy[i].point));
+                        }
+                        txt.textHighscores[1][0].setString("Medium");
+                        for (int i = 0; i < std::min((int)hscr.medium.size(), 7); ++i) {
+                            txt.textHighscores[1][i + 1].setString(std::to_string(i + 1) + ". " + hscr.medium[i].playerName + " " + std::to_string(hscr.medium[i].point));
+                        }
+                        txt.textHighscores[2][0].setString("Hard");
+                        for (int i = 0; i < std::min((int)hscr.hard.size(), 7); ++i) {
+                            txt.textHighscores[2][i + 1].setString(std::to_string(i + 1) + ". " + hscr.hard[i].playerName + " " + std::to_string(hscr.hard[i].point));
+                        }
+                        b = board();
                     }
                     else {
                         ctrl.isHighscoresPressed = false;
                     }
-                    hscr.load_score();
-                    txt.textHighscores[0][0].setString("Easy");
-                    for (int i = 0; i < hscr.easy.size(); ++i) {
-                        txt.textHighscores[0][i + 1].setString(std::to_string(i + 1) + ". " + hscr.easy[i].playerName + " " + std::to_string(hscr.easy[i].point));
-                    }
-                    txt.textHighscores[1][0].setString("Medium");
-                    for (int i = 0; i < hscr.medium.size(); ++i) {
-                        txt.textHighscores[1][i + 1].setString(std::to_string(i + 1) + ". " + hscr.medium[i].playerName + " " + std::to_string(hscr.medium[i].point));
-                    }
-                    txt.textHighscores[2][0].setString("Hard");
-                    for (int i = 0; i < hscr.hard.size(); ++i) {
-                        txt.textHighscores[2][i + 1].setString(std::to_string(i + 1) + ". " + hscr.hard[i].playerName + " " + std::to_string(hscr.hard[i].point));
-                    }
-                    b = board();
                 }
                 if (btn.isButtonPressed(pos.x, pos.y, e, btn.posButton(0, 4))) {                             //Quit
                     window.close();
@@ -186,6 +213,13 @@ game::game() {
             currentTime = deltaTime;
             if (currentTime > lastTime) {
                 realTime++;
+            }
+            if (b.mines == b.size - b.countRevealedCells) {                                     //Victory
+                b.isGameRunning = false;
+                if (!b.isFailure) {
+                    b.isVictory = true;
+                    ctrl.openNameDialog = true;
+                }
             }
         }
         //Draw menu outline
@@ -277,18 +311,27 @@ game::game() {
         }
         // draw name dialog
         if (ctrl.openNameDialog) {
+            btn.DuoGreenRect.setPosition(btn.posButton(1, 0));
             window.draw(btn.DuoGreenRect);
             m.line40px.setPosition(btn.posButton(2.06, 0));
             window.draw(m.line40px);
             window.draw(txt.textName);
             window.draw(txt.textPlayer);
             if (playerInput.getSize() == 6) {
-                std::cout << playerInput.toAnsiString() << "\n"; //demo text input
                 hscr.save_score(ctrl.gamemode, 1000, playerInput.toAnsiString());
                 playerInput.clear();
                 txt.textPlayer.setString("");
                 ctrl.openNameDialog = false;
             }
+        }
+        // draw OPTIONS
+        if (ctrl.isOptionsPressed) {
+            btn.GreenRect.setPosition(btn.posButton(1, 2));
+            window.draw(btn.GreenRect);
+            window.draw(txt.textOptions[0]);
+            btn.DuoGreenRect.setPosition(btn.posButton(2, 2));
+            window.draw(btn.DuoGreenRect);
+            window.draw(txt.textOptions[1]);
         }
         // draw highscores display
         if (ctrl.isHighscoresPressed) {

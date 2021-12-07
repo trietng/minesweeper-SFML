@@ -157,6 +157,7 @@
     <ClInclude Include="board.h" />
     <ClInclude Include="game.h" />
     <ClInclude Include="menu.h" />
+    <ClInclude Include="tiles.color.h" />
     <ClInclude Include="tiles.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

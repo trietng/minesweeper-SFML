@@ -28,6 +28,7 @@ struct board {
 	void swapMine(const int& x, const int& y);
 	bool endGame();
 	void DEBUG_revealAll();
+	void DEBUG_winGame();
 	int to_int(const std::string& str);
 	std::vector<int> to_vector_int(const std::string& str);
 	void edit_board(const int& value_type, const int& value, int& time);

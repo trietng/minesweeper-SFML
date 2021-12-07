@@ -22,6 +22,8 @@ menu::menu() {                                                            //Oute
     //40 px vertical line
     line40px.setSize(sf::Vector2f(4, 40));
     line40px.setFillColor(sf::Color::Green);
+    //Highscore outer
+
 }
 
 text::text() {
@@ -201,6 +203,12 @@ button::button() {
     CustomGreenRect.setFillColor(sf::Color::Black);
     CustomGreenRect.setOutlineThickness(4.f);
     CustomGreenRect.setOutlineColor(sf::Color::Green);
+
+    HSGreenRect.setSize(sf::Vector2f(612, 440));
+    HSGreenRect.setPosition(posButton(0, -10));
+    HSGreenRect.setFillColor(sf::Color::Black);
+    HSGreenRect.setOutlineThickness(4.f);
+    HSGreenRect.setOutlineColor(sf::Color::Green);
 }
 sf::Vector2f button::posButton(const double& x, const double& y) {
     if (y == -1) {
@@ -392,11 +400,22 @@ void highscores::load_score() {
     if (input.is_open()) {
         while (!input.eof()) {
             std::getline(input, load_value);
-            proc_score(load_value);
+            if (!load_value.empty()) {
+                proc_score(load_value);
+            }
         }
         input.close();
     }
     vector_hs_sort();
+    for (int i = 0; i < easy.size(); i++) {
+        std::cout << easy[i].playerName << " " << easy[i].point;
+    }
+    for (int i = 0; i < medium.size(); i++) {
+        std::cout << medium[i].playerName << " " << medium[i].point;
+    }
+    for (int i = 0; i < hard.size(); i++) {
+        std::cout << hard[i].playerName << " " << hard[i].point;
+    }
 }
 
 void highscores::vector_hs_sort() {
@@ -407,7 +426,7 @@ void highscores::vector_hs_sort() {
         std::sort(medium.begin(), medium.end(), comp_score);
     }
     if (hard.size() != 0) {
-        std::sort(hard.begin(), easy.end(), comp_score);
+        std::sort(hard.begin(), hard.end(), comp_score);
     }
 }
 

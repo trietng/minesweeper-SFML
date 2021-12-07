@@ -33,7 +33,7 @@ struct text {
 };
 
 struct button {
-    sf::RectangleShape GreenRect, TriGreenRect, DuoGreenRect, CustomGreenRect;
+    sf::RectangleShape GreenRect, TriGreenRect, DuoGreenRect, CustomGreenRect, HSGreenRect;
     button();
     sf::Vector2f posButton(const double& x, const double& y);
     bool isButtonPressed(const int& x, const int& y, sf::Event& e, sf::Vector2f p);

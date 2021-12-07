@@ -19,8 +19,7 @@ game::game() {
     lastTime = 0;
     currentTime = 0;
     realTime = 0;
-    while (window.isOpen())
-    {
+    while (window.isOpen()) {
         sf::Vector2i pos = sf::Mouse::getPosition(window);
         int bx = pos.x / cell_length;
         int by = pos.y / cell_length;
@@ -135,16 +134,26 @@ game::game() {
                     b.load_game(realTime);
                     b.size = b.width * b.length;
                 }
-                if (btn.isButtonPressed(pos.x, pos.y, e, btn.posButton(0, 3))) {                             //Quit
+                if (btn.isButtonPressed(pos.x, pos.y, e, btn.posButton(0, 3))) {
+                    if (!ctrl.isHighscoresPressed) {
+                        ctrl.isHighscoresPressed = true;
+                    }
+                    else {
+                        ctrl.isHighscoresPressed = false;
+                    }
                     hscr.load_score();
                     txt.textHighscores[0][0].setString("Easy");
                     for (int i = 0; i < hscr.easy.size(); ++i) {
                         txt.textHighscores[0][i + 1].setString(std::to_string(i + 1) + ". " + hscr.easy[i].playerName + " " + std::to_string(hscr.easy[i].point));
                     }
+                    txt.textHighscores[1][0].setString("Medium");
                     for (int i = 0; i < hscr.medium.size(); ++i) {
-                        
+                        txt.textHighscores[1][i + 1].setString(std::to_string(i + 1) + ". " + hscr.medium[i].playerName + " " + std::to_string(hscr.medium[i].point));
                     }
-                    ctrl.isHighscoresPressed = true;
+                    txt.textHighscores[2][0].setString("Hard");
+                    for (int i = 0; i < hscr.hard.size(); ++i) {
+                        txt.textHighscores[2][i + 1].setString(std::to_string(i + 1) + ". " + hscr.hard[i].playerName + " " + std::to_string(hscr.hard[i].point));
+                    }
                     b = board();
                 }
                 if (btn.isButtonPressed(pos.x, pos.y, e, btn.posButton(0, 4))) {                             //Quit
@@ -283,12 +292,18 @@ game::game() {
         }
         // draw highscores display
         if (ctrl.isHighscoresPressed) {
+            window.draw(btn.HSGreenRect);
             window.draw(txt.textHighscores[0][0]);
             for (int i = 0; i < hscr.easy.size(); ++i) {
                 window.draw(txt.textHighscores[0][i + 1]);
             }
+            window.draw(txt.textHighscores[1][0]);
             for (int i = 0; i < hscr.medium.size(); ++i) {
                 window.draw(txt.textHighscores[1][i + 1]);
+            }
+            window.draw(txt.textHighscores[2][0]);
+            for (int i = 0; i < hscr.hard.size(); ++i) {
+                window.draw(txt.textHighscores[2][i + 1]);
             }
         }
         //Draw board game

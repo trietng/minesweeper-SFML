@@ -27,6 +27,6 @@ struct game {
 	control ctrl;
 	highscores hscr;
 	saveload sl;
-	int deltaTime, lastTime, currentTime, realTime;
+	int lastTime, currentTime, realTime;
 	game();
 };

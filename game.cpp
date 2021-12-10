@@ -18,7 +18,6 @@ game::game() {
     b_texture_default.loadFromMemory(tiles_png, tiles_png_len);
     b_texture_color.loadFromMemory(tiles_color_jpg, tiles_color_jpg_len);
     b_sprite.setTexture(b_texture_default);
-    deltaTime = 0;
     lastTime = 0;
     currentTime = 0;
     realTime = 0;
@@ -133,6 +132,7 @@ game::game() {
                         ctrl = control();
                         clock.restart();
                         sl.load_game(b, realTime);
+                        ctrl.gamemode = b.gamemode();
                     }
                     if (btn.isButtonPressed(pos.x, pos.y, e, btn.posButton(0, 2))) {
                         ctrl.isNewPressed = false;
@@ -209,15 +209,13 @@ game::game() {
         //Clock starts
         if (b.isGameRunning) {                                                                              //Game is running
             if (ctrl.isModePressed) {
-                clock.restart();
                 realTime = 0;
                 ctrl.isNewPressed = false;
                 ctrl.isCustomPressed = false;
                 ctrl.isModePressed = false;
             }
-            deltaTime = clock.getElapsedTime().asSeconds();
             lastTime = currentTime;
-            currentTime = deltaTime;
+            currentTime = clock.getElapsedTime().asSeconds();;
             if (currentTime > lastTime) {
                 realTime++;
             }

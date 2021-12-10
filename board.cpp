@@ -284,6 +284,18 @@ bool board::endGame() {
     }
     return false;
 }
+int board::gamemode() {
+    if ((width == 9) && (length == 9) && (mines = 10)) {
+        return 0;
+    }
+    if ((width == 16) && (length == 16) && (mines = 40)) {
+        return 1;
+    }
+    if ((width == 32) && (length == 16) && (mines = 99)) {
+        return 2;
+    }
+    return 3;
+}
 void board::DEBUG_revealAll() {
     for (int a = 0; a < width; ++a) {
         for (int b = 0; b < length; ++b) {

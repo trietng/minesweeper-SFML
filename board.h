@@ -27,6 +27,7 @@ struct board {
 	void unflagCell(const int& x, const int& y);
 	void swapMine(const int& x, const int& y);
 	bool endGame();
+	int gamemode();
 	void DEBUG_revealAll();
 	void DEBUG_winGame();
 };

@@ -394,7 +394,7 @@ void saveload::edit_board(board& b, const int& value_type, const std::string& va
 void saveload::save_game(const board& b, const int& time) {
     std::ofstream output("save.txt");
     if (output.is_open()) {
-        output << "WIDTH  " << b.width << " " << b.length << " " << b.mines << " \n";
+        output << "[WIDTH][LENGTH][MINES]  " << b.width << " " << b.length << " " << b.mines << " \n";
         output << "TIME " << time << "\n";
         output << "ISGAMERUNNING " << b.isGameRunning << "\n";
         output << "COUNTREVEALEDCELLS " << b.countRevealedCells << "\n";
@@ -424,7 +424,7 @@ void saveload::load_game(board& b, int& time) {
     if (input.is_open()) {
         while (!input.eof()) { //eof = end of file
             while (itr_line < 1) {
-                input.ignore(20, ' ');
+                input.ignore(30, ' ');
                 std::getline(input, load_value);
                 edit_board(b, itr_line, load_value);
                 itr_line++;

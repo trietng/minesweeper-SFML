@@ -207,7 +207,7 @@ game::game() {
         }
         window.clear();
         //Clock starts
-        if (b.isGameRunning) {                                                                              //Game is running
+        if (b.isGameRunning) {                                                                  //Game is running
             if (ctrl.isModePressed) {
                 realTime = 0;
                 ctrl.isNewPressed = false;
@@ -375,7 +375,6 @@ game::game() {
                 }
             }
         }
-
         window.display();
     }
 }

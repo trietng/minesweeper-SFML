@@ -303,7 +303,7 @@ void board::DEBUG_winGame() {
     }
 }
 
-int board::to_int(const std::string& str) {
+int saveload::to_int(const std::string& str) {
     int result = 0;
     for (int i = 0; i < str.size(); ++i) {
         if (isdigit(str[i])) {
@@ -313,7 +313,7 @@ int board::to_int(const std::string& str) {
     return result;
 }
 
-std::vector<int> board::to_vector_int(const std::string & str) {
+std::vector<int> saveload::to_vector_int(const std::string & str) {
     std::vector<int> converted_value;
     int last = 0, current = 0;
     for (int i = 1; i < str.size(); ++i) {
@@ -326,58 +326,50 @@ std::vector<int> board::to_vector_int(const std::string & str) {
     return converted_value;
 }
 
-void board::edit_board(const int& value_type, const int& value, int& time) {
+void saveload::edit_board(board& b, const int& value_type, const int& value, int& time) {
     switch (value_type) {
-    case 0:
+    case 1:
         time = value;
         break;
-    case 1:
-        isGameRunning = value;
-        break;
     case 2:
-        width = value;
+        b.isGameRunning = value;
         break;
     case 3:
-        length = value;
+        b.countRevealedCells = value;
         break;
     case 4:
-        mines = value;
+        b.isFirstLeftClick = value;
         break;
     case 5:
-        countRevealedCells = value;
+        b.isVictory = value;
         break;
     case 6:
-        isFirstLeftClick = value;
-        break;
-    case 7:
-        isVictory = value;
-        break;
-    case 8:
-        isFailure = value;
+        b.isFailure = value;
         break;
     default:
         break;
     }
 }
 
-void board::edit_board(const int& value_type, const std::string& value) {
+void saveload::edit_board(board& b, const int& value_type, const std::string& value) {
     std::vector<int> converted_value = to_vector_int(value);
     int k = 0;
     switch (value_type) {
-    case 9:
-        mem_cell.resize(width, std::vector<int>(length));
-        for (int i = 0; i < width; i++) {
-            for (int j = 0; j < length; j++) {
-                mem_cell[i][j] = converted_value[k];
+    case 0:
+        b = board(converted_value[0], converted_value[1], converted_value[2]);
+        break;
+    case 7:
+        for (int i = 0; i < b.width; i++) {
+            for (int j = 0; j < b.length; j++) {
+                b.mem_cell[i][j] = converted_value[k];
                 k++;
             }
         }
         break;
-    case 10:
-        cell.resize(width, std::vector<int>(length));
-        for (int i = 0; i < width; i++) {
-            for (int j = 0; j < length; j++) {
-                cell[i][j] = converted_value[k];
+    case 8:
+        for (int i = 0; i < b.width; i++) {
+            for (int j = 0; j < b.length; j++) {
+                b.cell[i][j] = converted_value[k];
                 k++;
             }
         }
@@ -387,51 +379,54 @@ void board::edit_board(const int& value_type, const std::string& value) {
     }
 }
 
-void board::save_game(const int& time) {
+void saveload::save_game(const board& b, const int& time) {
     std::ofstream output("save.txt");
     if (output.is_open()) {
+        output << "WIDTH  " << b.width << " " << b.length << " " << b.mines << " \n";
         output << "TIME " << time << "\n";
-        output << "ISGAMERUNNING " << isGameRunning << "\n";
-        output << "WIDTH " << width << "\n";
-        output << "LENGTH " << length << "\n";
-        output << "MINES " << mines << "\n";
-        output << "COUNTREVEALEDCELLS " << countRevealedCells << "\n";
-        output << "ISFIRSTLEFTCLICK " << isFirstLeftClick << "\n";
-        output << "ISVICTORY " << isVictory << "\n";
-        output << "ISFAILURE " << isFailure << "\n";
+        output << "ISGAMERUNNING " << b.isGameRunning << "\n";
+        output << "COUNTREVEALEDCELLS " << b.countRevealedCells << "\n";
+        output << "ISFIRSTLEFTCLICK " << b.isFirstLeftClick << "\n";
+        output << "ISVICTORY " << b.isVictory << "\n";
+        output << "ISFAILURE " << b.isFailure << "\n";
         output << "MEM_CELL  ";
-        for (int i = 0; i < mem_cell.size(); ++i) {
-            for (int j = 0; j < mem_cell[i].size(); ++j) {
-                output << mem_cell[i][j] << " ";
+        for (int i = 0; i < b.mem_cell.size(); ++i) {
+            for (int j = 0; j < b.mem_cell[i].size(); ++j) {
+                output << b.mem_cell[i][j] << " ";
             }
         }
         output << "\nCELL  ";
-        for (int i = 0; i < cell.size(); ++i) {
-            for (int j = 0; j < cell[i].size(); ++j) {
-                output << cell[i][j] << " ";
+        for (int i = 0; i < b.cell.size(); ++i) {
+            for (int j = 0; j < b.cell[i].size(); ++j) {
+                output << b.cell[i][j] << " ";
             }
         }
         output.close();
     }
 }
 
-void board::load_game(int& time) {
+void saveload::load_game(board& b, int& time) {
     std::ifstream input("save.txt");
-    std::string load_value;  
+    std::string load_value;
     int itr_line = 0; // itr = iterator
-    if (input.is_open())
-    {
+    if (input.is_open()) {
         while (!input.eof()) { //eof = end of file
+            while (itr_line < 1) {
+                input.ignore(20, ' ');
+                std::getline(input, load_value);
+                edit_board(b, itr_line, load_value);
+                itr_line++;
+            }
+            while (itr_line < 7) {
+                input.ignore(20, ' ');
+                std::getline(input, load_value);
+                edit_board(b, itr_line, to_int(load_value), time);
+                itr_line++;
+            }
             while (itr_line < 9) {
                 input.ignore(20, ' ');
                 std::getline(input, load_value);
-                edit_board(itr_line, to_int(load_value), time);
-                itr_line++;
-            }
-            while (itr_line < 11) {
-                input.ignore(20, ' ');
-                std::getline(input, load_value);
-                edit_board(itr_line, load_value);
+                edit_board(b, itr_line, load_value);
                 itr_line++;
             }
         }

@@ -29,10 +29,13 @@ struct board {
 	bool endGame();
 	void DEBUG_revealAll();
 	void DEBUG_winGame();
+};
+
+struct saveload {
 	int to_int(const std::string& str);
 	std::vector<int> to_vector_int(const std::string& str);
-	void edit_board(const int& value_type, const int& value, int& time);
-	void edit_board(const int& value_type, const std::string& value);
-	void save_game(const int& time);
-	void load_game(int& time);
+	void edit_board(board& b,const int& value_type, const int& value, int& time);
+	void edit_board(board& b, const int& value_type, const std::string& value);
+	void save_game(const board& b, const int& time);
+	void load_game(board& b, int& time);
 };

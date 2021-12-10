@@ -23,7 +23,9 @@ struct menu {
 struct text {
     sf::Text textPlayCustom, textSave, textTimer, textEnd, textName, textPlayer, textCustomSetting, textOperator, textCustomValue;
     sf::Text textMainMenu[5], textGamemode[4], textHighscores[3][9], textOptions[2];
+    sf::Text textTitle, textAuthor1, textAuthor2, textPressKey;
     sf::Font fontConsola;
+    bool isSplash;
     text();
     sf::Vector2f posText(const double& x, const double& y);
     std::string MainMenuString(const int& x);

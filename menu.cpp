@@ -22,12 +22,36 @@ menu::menu() {                                                            //Oute
     //40 px vertical line
     line40px.setSize(sf::Vector2f(4, 40));
     line40px.setFillColor(sf::Color::Green);
-    //Highscore outer
-
 }
 
 text::text() {
     fontConsola.loadFromMemory(consola_ttf_font, consola_ttf_font_length);
+    
+    textTitle.setFont(fontConsola);
+    textTitle.setString("MINESWEEPER");
+    textTitle.setCharacterSize(72);
+    textTitle.setFillColor(sf::Color::Green);
+    textTitle.setPosition(300, 300);
+
+    textAuthor1.setFont(fontConsola);
+    textAuthor1.setString("21125097 - Nguyen Dinh Triet");
+    textAuthor1.setCharacterSize(24);
+    textAuthor1.setFillColor(sf::Color::Green);
+    textAuthor1.setPosition(300, 380);
+
+    textAuthor2.setFont(fontConsola);
+    textAuthor2.setString("21125139 - Tran Hoang Thi");
+    textAuthor2.setCharacterSize(24);
+    textAuthor2.setFillColor(sf::Color::Green);
+    textAuthor2.setPosition(300, 410);
+
+    textPressKey.setFont(fontConsola);
+    textPressKey.setString("Press enter to continue...");
+    textPressKey.setCharacterSize(24);
+    textPressKey.setFillColor(sf::Color::Green);
+    textPressKey.setPosition(300, 440);
+
+    isSplash = true;
 
     for (int i = 0; i < 5; ++i) {
         textMainMenu[i].setFont(fontConsola);
@@ -44,12 +68,12 @@ text::text() {
         textGamemode[i].setPosition(posText(i + 1, 0));
         textGamemode[i].setString(GamemodeString(i + 1));
     }
-    for (int j = 0; j < 3; ++j) {
+    for (double j = 0, k = 0; j < 3; ++j, k += 1.7) {
         for (int i = 0; i < 9; ++i) {
-            textHighscores[j][i].setFont(fontConsola);
-            textHighscores[j][i].setCharacterSize(24);
-            textHighscores[j][i].setFillColor(sf::Color::Green);
-            textHighscores[j][i].setPosition(posText(j, i - 10));
+            textHighscores[(int)j][i].setFont(fontConsola);
+            textHighscores[(int)j][i].setCharacterSize(24);
+            textHighscores[(int)j][i].setFillColor(sf::Color::Green);
+            textHighscores[(int)j][i].setPosition(posText(k, i - 10));
         }
     }
     for (int i = 0; i < 2; ++i) {
@@ -231,8 +255,8 @@ button::button() {
     CustomGreenRect.setOutlineThickness(4.f);
     CustomGreenRect.setOutlineColor(sf::Color::Green);
 
-    HSGreenRect.setSize(sf::Vector2f(612, 440));
-    HSGreenRect.setPosition(posButton(0, -10));
+    HSGreenRect.setSize(sf::Vector2f(1000, 440));
+    HSGreenRect.setPosition(posButton(-0.05, -10));
     HSGreenRect.setFillColor(sf::Color::Black);
     HSGreenRect.setOutlineThickness(4.f);
     HSGreenRect.setOutlineColor(sf::Color::Green);
@@ -401,7 +425,14 @@ int highscores::calc_point(const int& mode_type, const int& time) {
     default:
         break;
     }
-    return base + bonus;
+    return (bonus > 0) ? (base + bonus) : (base);
+    /*
+    if (bonus > 0) {
+        return base + bonus;
+    else {
+        return base;
+    }
+    */
 }
 
 void highscores::proc_score(const std::string& value) {

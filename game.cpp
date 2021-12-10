@@ -7,8 +7,7 @@ control::control() {
     openNameDialog = false;
     isHighscoresPressed = false;
     isOptionsPressed = false;
-    colorState = false; //true if color, false if default
-    isDeleteHSData = false;
+    colorState = false; //true if color, false if default (green)
     gamemode = -1;
 }
 
@@ -28,20 +27,15 @@ game::game() {
         int bx = pos.x / cell_length;
         int by = pos.y / cell_length;
         sf::Event e;
-        while (window.pollEvent(e))
-        {
+        while (window.pollEvent(e)) {
             if (e.type == sf::Event::Closed) {
                 window.close();
             }
-            if (e.type == sf::Event::KeyPressed) {
-                if (e.key.code == sf::Keyboard::Num1) {
-                    b.DEBUG_revealAll();
-                }
-                if (e.key.code == sf::Keyboard::Num2) {
-                    b.DEBUG_winGame();
-                }
-                if (e.key.code == sf::Keyboard::Num3) {
-                    b = board(5, 5, 1);
+            if (txt.isSplash) {
+                if (e.type == sf::Event::KeyPressed) {
+                    if (e.key.code == sf::Keyboard::Enter) {
+                        txt.isSplash = false;
+                    }
                 }
             }
             if (e.type == sf::Event::MouseButtonPressed) {
@@ -110,6 +104,7 @@ game::game() {
                         }
                     }
                     if (ctrl.isCustomPressed) {
+                        ctrl.isOptionsPressed = false;
                         for (int i = 1; i < 4; ++i) {
                             if (btn.isOperatorButtonPressed(pos.x, pos.y, e, btn.posButton(3.5, i))) {
                                 cval.edit_custom_value(i, 0);
@@ -126,18 +121,18 @@ game::game() {
                         }
                         if (btn.isPlayCustomButtonPressed(pos.x, pos.y, e, btn.posButton(3, 4))) {
                             b = board(cval.customWidth, cval.customLength, cval.customMines);
+                            ctrl.gamemode = 3;
                             ctrl.isModePressed = true;
                             ctrl.isCustomPressed = true;
                         }
                     }
                     if (btn.isButtonPressed(pos.x, pos.y, e, btn.posButton(0, -1))) {
-                        b.save_game(realTime);
+                        sl.save_game(b, realTime);
                     }
                     if (btn.isButtonPressed(pos.x, pos.y, e, btn.posButton(0, 1))) {
                         ctrl = control();
                         clock.restart();
-                        b.load_game(realTime);
-                        b.size = b.width * b.length;
+                        sl.load_game(b, realTime);
                     }
                     if (btn.isButtonPressed(pos.x, pos.y, e, btn.posButton(0, 2))) {
                         ctrl.isNewPressed = false;
@@ -150,6 +145,7 @@ game::game() {
                         }
                     }
                     if (ctrl.isOptionsPressed && btn.isButtonPressed(pos.x, pos.y, e, btn.posButton(1, 2))) {
+                        ctrl.isCustomPressed = false;
                         if (!ctrl.colorState) {
                             ctrl.colorState = true;
                             txt.textOptions[0].setString(txt.OptionsString(1));
@@ -194,14 +190,17 @@ game::game() {
                     window.close();
                 }
             }
-            if (b.isVictory && !ctrl.isCustomPressed) {
+            if (b.isVictory && ctrl.gamemode != 3) {
                 if (e.type == sf::Event::TextEntered) {
                     if (playerInput.getSize() < 6) {
                         if (e.text.unicode > 32 && e.text.unicode < 127) {
                             playerInput += e.text.unicode;
                             txt.textPlayer.setString(playerInput);
                         }
-                        if (e.text.unicode == str.erase(str.size() - 1, 1));
+                        if ((e.text.unicode == '\b') && (playerInput.getSize() != 0)) {
+                            playerInput.erase(playerInput.getSize() - 1, 1);
+                            txt.textPlayer.setString(playerInput);
+                        }
                     }
                 }
             }
@@ -226,145 +225,159 @@ game::game() {
                 b.isGameRunning = false;
                 if (!b.isFailure) {
                     b.isVictory = true;
-                    ctrl.openNameDialog = true;
+                    if (ctrl.gamemode != 3) {
+                        ctrl.isNewPressed = false;
+                        ctrl.isOptionsPressed = false;
+                        ctrl.openNameDialog = true;
+                    }
                 }
             }
         }
-        //Draw menu outline
-        window.draw(m.outer);
-        window.draw(m.separator);
-        //Draw save button
-        btn.GreenRect.setPosition(btn.posButton(0, -1));
-        window.draw(btn.GreenRect);
-        window.draw(txt.textSave);
-        //Draw timer
-        btn.GreenRect.setPosition(btn.posButton(4, -1));
-        window.draw(btn.GreenRect);
-        txt.textTimer.setString(std::to_string(realTime));
-        window.draw(txt.textTimer);
-        //Draw gamemode menu
-        if (ctrl.isNewPressed) {
-            for (int i = 1; i < 5; ++i) {
-                btn.GreenRect.setPosition(btn.posButton(i, 0));
-                window.draw(btn.GreenRect);
-                window.draw(txt.textGamemode[i - 1]);
-            }
+        //Draw splash screen
+        if (txt.isSplash) {
+            window.draw(txt.textTitle);
+            window.draw(txt.textAuthor1);
+            window.draw(txt.textAuthor2);
+            window.draw(txt.textPressKey);
         }
-        // Draw custom gamemode menu
-        if (ctrl.isCustomPressed) {
-            for (double i = 1; i < 4; ++i) {
-                btn.CustomGreenRect.setPosition(btn.posButton(3, i));
+        else {
+            //Draw menu outline
+            window.draw(m.outer);
+            window.draw(m.separator);
+            //Draw save button
+            btn.GreenRect.setPosition(btn.posButton(0, -1));
+            window.draw(btn.GreenRect);
+            window.draw(txt.textSave);
+            //Draw timer
+            btn.GreenRect.setPosition(btn.posButton(4, -1));
+            window.draw(btn.GreenRect);
+            txt.textTimer.setString(std::to_string(realTime));
+            window.draw(txt.textTimer);
+            //Draw gamemode menu
+            if (ctrl.isNewPressed) {
+                for (int i = 1; i < 5; ++i) {
+                    btn.GreenRect.setPosition(btn.posButton(i, 0));
+                    window.draw(btn.GreenRect);
+                    window.draw(txt.textGamemode[i - 1]);
+                }
+            }
+            // Draw custom gamemode menu
+            if (ctrl.isCustomPressed) {
+                for (double i = 1; i < 4; ++i) {
+                    btn.CustomGreenRect.setPosition(btn.posButton(3, i));
+                    window.draw(btn.CustomGreenRect);
+                    m.line40px.setPosition(btn.posButton(3.5, i));
+                    window.draw(m.line40px);
+                    m.line40px.setPosition(btn.posButton(3.696, i));
+                    window.draw(m.line40px);
+                    m.line40px.setPosition(btn.posButton(3.892, i));
+                    window.draw(m.line40px);
+                    m.line40px.setPosition(btn.posButton(4.392, i));
+                    window.draw(m.line40px);
+                    m.line40px.setPosition(btn.posButton(4.59, i));
+                    window.draw(m.line40px);
+                    txt.textCustomSetting.setString(txt.CustomSettingString(i));
+                    txt.textCustomSetting.setPosition(txt.posText(3, i));
+                    window.draw(txt.textCustomSetting);
+                    txt.textOperator.setString(txt.OperatorString(0));
+                    txt.textOperator.setPosition(txt.posText(3.48, i));
+                    window.draw(txt.textOperator);
+                    txt.textOperator.setString(txt.OperatorString(1));
+                    txt.textOperator.setPosition(txt.posText(3.7, i));
+                    window.draw(txt.textOperator);
+                    txt.textOperator.setString(txt.OperatorString(2));
+                    txt.textOperator.setPosition(txt.posText(4.4, i));
+                    window.draw(txt.textOperator);
+                    txt.textOperator.setString(txt.OperatorString(3));
+                    txt.textOperator.setPosition(txt.posText(4.5686, i));
+                    window.draw(txt.textOperator);
+                }
+                //display custom values
+                txt.textCustomValue.setPosition(txt.posText(4.02, 1));
+                txt.textCustomValue.setString(std::to_string(cval.customWidth));
+                window.draw(txt.textCustomValue);
+                txt.textCustomValue.setPosition(txt.posText(4.02, 2));
+                txt.textCustomValue.setString(std::to_string(cval.customLength));
+                window.draw(txt.textCustomValue);
+                txt.textCustomValue.setPosition(txt.posText(4.02, 3));
+                txt.textCustomValue.setString(std::to_string(cval.customMines));
+                window.draw(txt.textCustomValue);
+                //display "Play"
+                btn.CustomGreenRect.setPosition(btn.posButton(3, 4));
                 window.draw(btn.CustomGreenRect);
-                m.line40px.setPosition(btn.posButton(3.5, i));
+                window.draw(txt.textPlayCustom);
+            }
+            //Draw main menu buttons
+            for (int i = 0; i < 5; ++i) {
+                btn.GreenRect.setPosition(btn.posButton(0, i));
+                window.draw(btn.GreenRect);
+                window.draw(txt.textMainMenu[i]);
+            }
+            // Draw status button
+            window.draw(btn.TriGreenRect);
+            // Draw victory or failure text
+            if (b.isFailure) {
+                txt.textEnd.setFillColor(sf::Color::Red);
+                txt.textEnd.setPosition(txt.posText(1.8, -1.4));
+                txt.textEnd.setString("GAME OVER!");
+                window.draw(txt.textEnd);
+            }
+            if (b.isVictory) {
+                txt.textEnd.setFillColor(sf::Color::Yellow);
+                txt.textEnd.setPosition(txt.posText(2, -1.4));
+                txt.textEnd.setString("VICTORY!");
+                window.draw(txt.textEnd);
+            }
+            // draw name dialog
+            if ((ctrl.openNameDialog) && (ctrl.gamemode != 3)) {
+                btn.DuoGreenRect.setPosition(btn.posButton(1, 0));
+                window.draw(btn.DuoGreenRect);
+                m.line40px.setPosition(btn.posButton(2.06, 0));
                 window.draw(m.line40px);
-                m.line40px.setPosition(btn.posButton(3.696, i));
-                window.draw(m.line40px);
-                m.line40px.setPosition(btn.posButton(3.892, i));
-                window.draw(m.line40px);
-                m.line40px.setPosition(btn.posButton(4.392, i));
-                window.draw(m.line40px);
-                m.line40px.setPosition(btn.posButton(4.59, i));
-                window.draw(m.line40px);
-                txt.textCustomSetting.setString(txt.CustomSettingString(i));
-                txt.textCustomSetting.setPosition(txt.posText(3, i));
-                window.draw(txt.textCustomSetting);
-                txt.textOperator.setString(txt.OperatorString(0));
-                txt.textOperator.setPosition(txt.posText(3.48, i));
-                window.draw(txt.textOperator);
-                txt.textOperator.setString(txt.OperatorString(1));
-                txt.textOperator.setPosition(txt.posText(3.7, i));
-                window.draw(txt.textOperator);
-                txt.textOperator.setString(txt.OperatorString(2));
-                txt.textOperator.setPosition(txt.posText(4.4, i));
-                window.draw(txt.textOperator);
-                txt.textOperator.setString(txt.OperatorString(3));
-                txt.textOperator.setPosition(txt.posText(4.5686, i));
-                window.draw(txt.textOperator);
+                window.draw(txt.textName);
+                window.draw(txt.textPlayer);
+                if (playerInput.getSize() == 6) {
+                    hscr.save_score(ctrl.gamemode, hscr.calc_point(ctrl.gamemode, realTime), playerInput.toAnsiString());
+                    playerInput.clear();
+                    txt.textPlayer.setString("");
+                    ctrl.openNameDialog = false;
+                }
             }
-            //display custom values
-            txt.textCustomValue.setPosition(txt.posText(4.02, 1));
-            txt.textCustomValue.setString(std::to_string(cval.customWidth));
-            window.draw(txt.textCustomValue);
-            txt.textCustomValue.setPosition(txt.posText(4.02, 2));
-            txt.textCustomValue.setString(std::to_string(cval.customLength));
-            window.draw(txt.textCustomValue);
-            txt.textCustomValue.setPosition(txt.posText(4.02, 3));
-            txt.textCustomValue.setString(std::to_string(cval.customMines));
-            window.draw(txt.textCustomValue);
-            //display "Play"
-            btn.CustomGreenRect.setPosition(btn.posButton(3, 4));
-            window.draw(btn.CustomGreenRect);
-            window.draw(txt.textPlayCustom);
-        }
-        //Draw main menu buttons
-        for (int i = 0; i < 5; ++i) {                                    
-            btn.GreenRect.setPosition(btn.posButton(0, i));
-            window.draw(btn.GreenRect);
-            window.draw(txt.textMainMenu[i]);
-        }
-        // Draw status button
-        window.draw(btn.TriGreenRect);                                     
-        // Draw victory or failure text
-        if (b.isFailure) {                             
-            txt.textEnd.setFillColor(sf::Color::Red);
-            txt.textEnd.setPosition(txt.posText(1.8, -1.4));
-            txt.textEnd.setString("GAME OVER!");
-            window.draw(txt.textEnd);
-        }
-        if (b.isVictory) {
-            txt.textEnd.setFillColor(sf::Color::Yellow);
-            txt.textEnd.setPosition(txt.posText(2, -1.4));
-            txt.textEnd.setString("VICTORY!");
-            window.draw(txt.textEnd);
-        }
-        // draw name dialog
-        if (ctrl.openNameDialog) {
-            btn.DuoGreenRect.setPosition(btn.posButton(1, 0));
-            window.draw(btn.DuoGreenRect);
-            m.line40px.setPosition(btn.posButton(2.06, 0));
-            window.draw(m.line40px);
-            window.draw(txt.textName);
-            window.draw(txt.textPlayer);
-            if (playerInput.getSize() == 6) {
-                hscr.save_score(ctrl.gamemode, hscr.calc_point(ctrl.gamemode, realTime), playerInput.toAnsiString());
-                playerInput.clear();
-                txt.textPlayer.setString("");
-                ctrl.openNameDialog = false;
+            // draw OPTIONS
+            if (ctrl.isOptionsPressed) {
+                btn.GreenRect.setPosition(btn.posButton(1, 2));
+                window.draw(btn.GreenRect);
+                window.draw(txt.textOptions[0]);
+                btn.DuoGreenRect.setPosition(btn.posButton(2, 2));
+                window.draw(btn.DuoGreenRect);
+                window.draw(txt.textOptions[1]);
+            }
+            // draw highscores display
+            if (ctrl.isHighscoresPressed) {
+                window.draw(btn.HSGreenRect);
+                window.draw(txt.textHighscores[0][0]);
+                for (int i = 0; i < hscr.easy.size(); ++i) {
+                    window.draw(txt.textHighscores[0][i + 1]);
+                }
+                window.draw(txt.textHighscores[1][0]);
+                for (int i = 0; i < hscr.medium.size(); ++i) {
+                    window.draw(txt.textHighscores[1][i + 1]);
+                }
+                window.draw(txt.textHighscores[2][0]);
+                for (int i = 0; i < hscr.hard.size(); ++i) {
+                    window.draw(txt.textHighscores[2][i + 1]);
+                }
+            }
+            //Draw board game
+            for (double i = 0; i < b.width; ++i) {                                                                         //Draw cells
+                for (double j = 0; j < b.length; ++j) {
+                    b_sprite.setTextureRect(sf::IntRect(b.cell[i][j] * cell_length, 0, cell_length, cell_length));
+                    b_sprite.setPosition(i * cell_length, j * cell_length);
+                    window.draw(b_sprite);
+                }
             }
         }
-        // draw OPTIONS
-        if (ctrl.isOptionsPressed) {
-            btn.GreenRect.setPosition(btn.posButton(1, 2));
-            window.draw(btn.GreenRect);
-            window.draw(txt.textOptions[0]);
-            btn.DuoGreenRect.setPosition(btn.posButton(2, 2));
-            window.draw(btn.DuoGreenRect);
-            window.draw(txt.textOptions[1]);
-        }
-        // draw highscores display
-        if (ctrl.isHighscoresPressed) {
-            window.draw(btn.HSGreenRect);
-            window.draw(txt.textHighscores[0][0]);
-            for (int i = 0; i < hscr.easy.size(); ++i) {
-                window.draw(txt.textHighscores[0][i + 1]);
-            }
-            window.draw(txt.textHighscores[1][0]);
-            for (int i = 0; i < hscr.medium.size(); ++i) {
-                window.draw(txt.textHighscores[1][i + 1]);
-            }
-            window.draw(txt.textHighscores[2][0]);
-            for (int i = 0; i < hscr.hard.size(); ++i) {
-                window.draw(txt.textHighscores[2][i + 1]);
-            }
-        }
-        //Draw board game
-        for (double i = 0; i < b.width; ++i) {                                                                         //Draw cells
-            for (double j = 0; j < b.length; ++j) {
-                b_sprite.setTextureRect(sf::IntRect(b.cell[i][j] * cell_length, 0, cell_length, cell_length));
-                b_sprite.setPosition(i * cell_length, j * cell_length);
-                window.draw(b_sprite);
-            }
-        }
+
         window.display();
     }
 }

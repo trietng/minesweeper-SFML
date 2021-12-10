@@ -22,7 +22,7 @@ struct menu {
 
 struct text {
     sf::Text textPlayCustom, textSave, textTimer, textEnd, textName, textPlayer, textCustomSetting, textOperator, textCustomValue;
-    sf::Text textMainMenu[5], textGamemode[4], textHighscores[3][10], textOptions[2];
+    sf::Text textMainMenu[5], textGamemode[4], textHighscores[3][9], textOptions[2];
     sf::Font fontConsola;
     text();
     sf::Vector2f posText(const double& x, const double& y);
@@ -57,4 +57,5 @@ struct highscores {
     void save_score(const int& mode_type, const int& point, const std::string& playerName);
     void load_score();
     void vector_hs_sort();
+    void delete_score();
 };

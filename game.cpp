@@ -130,7 +130,7 @@ game::game() {
                             ctrl.isCustomPressed = true;
                         }
                     }
-                    if (btn.isButtonPressed(pos.x, pos.y, e, btn.posButton(0, -1))) {                             //Quit
+                    if (btn.isButtonPressed(pos.x, pos.y, e, btn.posButton(0, -1))) {
                         b.save_game(realTime);
                     }
                     if (btn.isButtonPressed(pos.x, pos.y, e, btn.posButton(0, 1))) {
@@ -161,17 +161,9 @@ game::game() {
                             b_sprite.setTexture(b_texture_default);
                         }
                     }
-                    if (ctrl.isOptionsPressed) {
-                        if (!ctrl.colorState) {
-                            ctrl.colorState = true;
-                            txt.textOptions[0].setString(txt.OptionsString(1));
-                            b_sprite.setTexture(b_texture_color);
-                        }
-                        else {
-                            ctrl.colorState = false;
-                            txt.textOptions[0].setString(txt.OptionsString(0));
-                            b_sprite.setTexture(b_texture_default);
-                        }
+                    if (ctrl.isOptionsPressed && btn.isPlayCustomButtonPressed(pos.x, pos.y, e, btn.posButton(2, 2))) {
+                        hscr.delete_score();
+                        //txt.textHighscores
                     }
                     if (btn.isButtonPressed(pos.x, pos.y, e, btn.posButton(0, 3))) {
                         if (!ctrl.isHighscoresPressed) {
@@ -209,6 +201,7 @@ game::game() {
                             playerInput += e.text.unicode;
                             txt.textPlayer.setString(playerInput);
                         }
+                        if (e.text.unicode == str.erase(str.size() - 1, 1));
                     }
                 }
             }
@@ -333,7 +326,7 @@ game::game() {
             window.draw(txt.textName);
             window.draw(txt.textPlayer);
             if (playerInput.getSize() == 6) {
-                hscr.save_score(ctrl.gamemode, 1000, playerInput.toAnsiString());
+                hscr.save_score(ctrl.gamemode, hscr.calc_point(ctrl.gamemode, realTime), playerInput.toAnsiString());
                 playerInput.clear();
                 txt.textPlayer.setString("");
                 ctrl.openNameDialog = false;

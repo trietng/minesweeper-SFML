@@ -52,7 +52,6 @@ text::text() {
             textHighscores[j][i].setPosition(posText(j, i - 10));
         }
     }
-    
     for (int i = 0; i < 2; ++i) {
         textOptions[i].setFont(fontConsola);
         textOptions[i].setCharacterSize(24);
@@ -133,6 +132,7 @@ std::string text::MainMenuString(const int& x) {
     default:
         break;
     }
+    return "";
 }
 
 std::string text::GamemodeString(const int& x) {
@@ -152,6 +152,7 @@ std::string text::GamemodeString(const int& x) {
     default:
         break;
     }
+    return "";
 }
 
 std::string text::CustomSettingString(const int& x) {
@@ -168,6 +169,7 @@ std::string text::CustomSettingString(const int& x) {
         default:
             break;
     }
+    return "";
 }
 
 std::string text::OperatorString(const int& x) {
@@ -187,6 +189,7 @@ std::string text::OperatorString(const int& x) {
         default:
             break;
     }
+    return "";
 }
 
 std::string text::OptionsString(const int& x) {
@@ -222,7 +225,6 @@ button::button() {
     DuoGreenRect.setFillColor(sf::Color::Black);
     DuoGreenRect.setOutlineThickness(4.f);
     DuoGreenRect.setOutlineColor(sf::Color::Green);
-    
     
     CustomGreenRect.setSize(sf::Vector2f(364, 40));
     CustomGreenRect.setFillColor(sf::Color::Black);
@@ -385,7 +387,21 @@ int highscores::to_int(const char& ch) {
 }
 
 int highscores::calc_point(const int& mode_type, const int& time) {
-    return 0;
+    int base = 1000, bonus = 1000, minute = time / 60;
+    switch (mode_type) {
+    case 0:
+        bonus -= minute * 100;
+        break;
+    case 1:
+        bonus -= minute * 50;
+        break;
+    case 2:
+        bonus -= minute * 25;
+        break;
+    default:
+        break;
+    }
+    return base + bonus;
 }
 
 void highscores::proc_score(const std::string& value) {
@@ -453,4 +469,8 @@ void highscores::vector_hs_sort() {
     if (hard.size() != 0) {
         std::sort(hard.begin(), hard.end(), comp_score);
     }
+}
+
+void highscores::delete_score() {
+    remove("highscores.txt");
 }

@@ -479,6 +479,7 @@ void highscores::load_score() {
         input.close();
     }
     vector_hs_sort();
+    /*debug only
     for (int i = 0; i < easy.size(); i++) {
         std::cout << easy[i].playerName << " " << easy[i].point;
     }
@@ -487,7 +488,7 @@ void highscores::load_score() {
     }
     for (int i = 0; i < hard.size(); i++) {
         std::cout << hard[i].playerName << " " << hard[i].point;
-    }
+    } */
 }
 
 void highscores::vector_hs_sort() {

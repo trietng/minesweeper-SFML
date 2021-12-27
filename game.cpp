@@ -48,7 +48,7 @@ game::game() {
                                     }
                                     b.revealCell(bx, by);
                                     if (b.isMine(bx, by)) {
-                                        b.isFailure = true;                                                     //Hit a mine
+                                        b.isFailure = true;
                                         b.isGameRunning = false;
                                     }
                                     if (b.isZero(bx, by)) {
@@ -56,7 +56,7 @@ game::game() {
                                     }
                                 }
                             }
-                            if (e.key.code == sf::Mouse::Right) {                                               //Flagging
+                            if (e.key.code == sf::Mouse::Right) {
                                 if (b.isFlagged(bx, by)) {
                                     b.unflagCell(bx, by);
                                 }
